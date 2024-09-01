@@ -2,8 +2,8 @@
 
 import { useState, lazy, Suspense } from 'react';
 import WebApp from '@twa-dev/sdk';
-const ShowData = lazy(() => import('./ShowData'));
-import ShowDataSkeleton from './components/ShowDataSkeleton';
+const ShowData = lazy(() => import('@/components/ShowData'));
+import ShowDataSkeleton from '@/components/ShowDataSkeleton';
 
 WebApp.ready();
 
