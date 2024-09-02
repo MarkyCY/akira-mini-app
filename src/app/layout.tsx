@@ -1,11 +1,9 @@
 import type { Metadata, Viewport } from "next";
- 
-import { Inter } from "next/font/google";
-import "./globals.css";
-import ClientComponent from "./client-component";
-import NavBarButtons from "./nav-buttons";
 
-const inter = Inter({ subsets: ["latin"] });
+import "./globals.css";
+import ClientComponent from "@/components/client-component";
+import NavBarButtons from "@/components/nav-buttons";
+
 
 export const metadata: Metadata = {
   title: "Otaku Senpai",
@@ -26,9 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="bg-white dark:bg-black">
         <ClientComponent />
-        {children}
+        <div id="app">
+          <div className='px-5 pt-10 pb-24 grid items-start gap-2.5'>
+            {children}
+          </div>
+        </div>
         <NavBarButtons />
       </body>
     </html>
