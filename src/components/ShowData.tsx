@@ -48,9 +48,7 @@ export default function ShowData() {
 
     return (
         <>
-
-
-            <div className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+            <div className="w-full h-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
                 <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
                     Telegram Data
                 </h5>
@@ -59,15 +57,15 @@ export default function ShowData() {
                     {initData && (
                         <>
                             <li>
-                                <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                                <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-neutral-600 dark:hover:bg-neutral-500 dark:text-white">
                                     <span className="flex-1 ms-3 whitespace-nowrap">{initData.user?.id}</span>
-                                    <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">ID</span>
+                                    <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-neutral-700 dark:text-neutral-400">ID</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                                <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-neutral-600 dark:hover:bg-neutral-500 dark:text-white">
                                     <span className="flex-1 ms-3 whitespace-nowrap">{initData.user?.first_name}</span>
-                                    <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">First Name</span>
+                                    <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-neutral-700 dark:text-neutral-400">First Name</span>
                                 </a>
                             </li>
                         </>
@@ -81,19 +79,6 @@ export default function ShowData() {
                         Datos de guía. Nada oficial.</a>
                 </div>
             </div>
-
-            {/* <div className="max-w-sm p-4 border border-gray-200 rounded shadow md:p-6 dark:border-gray-700">
-                {initData && (
-                    <h1>
-                        ID {initData.user?.id}<br />
-                        Full Name {initData.user?.first_name}<br />
-                        Username {initData.user?.username}<br />
-                        1photo_url {initData.user?.photo_url}<br />
-                        2photo_url {initData.chat?.photo_url}<br />
-
-                    </h1>
-                )}
-            </div> */}
         </>
     )
 }
