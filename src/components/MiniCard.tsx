@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export default function MiniCard(props: any) {
+export default function MiniCard() {
 
 return (
         <a href="#" className="w-full h-[6.5rem] max-w-sm flex items-center py-2 pl-3 pr-2 bg-white shadow-md rounded-[13px] dark:bg-neutral-900 dark:border-neutral-900">
