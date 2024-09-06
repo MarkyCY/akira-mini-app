@@ -27,9 +27,7 @@ export default function RootLayout({
       <body className="bg-white dark:bg-black">
         <ClientComponent />
         <div id="app">
-          <div className='px-5 pt-10 pb-24 grid items-start gap-2.5'>
             {children}
-          </div>
         </div>
         <NavBarButtons />
       </body>
