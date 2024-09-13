@@ -14,7 +14,7 @@ export default function ShowResume() {
             <div className="grid grid-cols-2">
                 <div>
                     <p className="text-sm font-normal text-gray-600 dark:text-gray-300">
-                        <span className="font-medium">1207</span> <span className={getColor(23)}>+23 (1.9%)</span>
+                        <span className="font-medium">1207</span> <span className={getColor(-23)}>+23 (1.9%)</span>
                     </p>
                     <p className="text-xs font-normal text-gray-400 dark:text-neutral-500">Miembros</p>
                 </div>
