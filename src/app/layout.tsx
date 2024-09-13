@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
-import ClientComponent from "@/components/client-component";
-import NavBarButtons from "@/components/nav-buttons";
+import ClientComponent from "@/components/Home/client-component";
+import NavBarButtons from "@/components/Home/nav-buttons";
 
 
 export const metadata: Metadata = {
