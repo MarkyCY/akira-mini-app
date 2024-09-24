@@ -7,7 +7,7 @@ export default function MiniCard() {
       <div className="flex-shrink-0">
         <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-800 rounded-[12px] flex items-center justify-center">
           <Image
-            src="http://127.0.0.1:8080/potion.png"
+            src="/potion.png"
             alt="Poción Verde"
             className="w-full h-full object-cover rounded-[12px]"
             width={640}
