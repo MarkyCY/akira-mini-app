@@ -18,6 +18,8 @@ export default function SliderContent() {
                     <div className="flex space-x-4">
                         <Suspense fallback={<SliderCardSkeleton />}>
                             <SliderCard />
+                            <SliderCard />
+                            <SliderCard />
                         </Suspense>
                     </div>
                 </div>
