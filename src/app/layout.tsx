@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-white dark:bg-black">
         <ClientComponent />
-        <div id="app">
+        <div className='pt-10 pb-20' id="app">
             {children}
         </div>
         <NavBarButtons />
