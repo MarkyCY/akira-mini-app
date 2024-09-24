@@ -5,7 +5,7 @@ export default function ShowResume() {
 
     return (
         <div className="w-full h-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
-            <h5 className="mb-1 text-sm font-normal text-gray-700 dark:text-white">
+            <h5 className="mb-1 text-sm font-semibold text-gray-700 dark:text-white">
                 Resumen
             </h5>
             <h6 className="mb-3 text-[12px] font-normal text-gray-500 dark:text-neutral-500">
