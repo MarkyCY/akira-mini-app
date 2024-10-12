@@ -18,7 +18,7 @@ export default function MiniCard() {
       <div className="ml-4 my-3 flex-grow">
         <div className="text-lg font-semibold text-black dark:text-white">Poción Verde</div>
         <div className="text-sm leading-4 text-neutral-500 dark:text-neutral-400">
-          Lorem ipsum dolor sit amet consectetur.
+          Lorem ipsum dolor sit amet consectetur. 
         </div>
       </div>
       <div className="w-32 text-center">
