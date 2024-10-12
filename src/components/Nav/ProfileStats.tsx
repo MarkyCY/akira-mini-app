@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import ShowDataSkeleton from "../Home/ShowDataSkeleton";
 import ShowData from "../Home/ShowData";
-import MiniCard from "../Home/MiniCard";
-import MiniCardSkeleton from "../Home/MiniCardSkeleton";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
 
@@ -16,10 +14,6 @@ export default function ProfileStats() {
             </div>
             <Suspense fallback={<ShowDataSkeleton />}>
                 <ShowData />
-            </Suspense>
-            {/*  */}
-            <Suspense fallback={<MiniCardSkeleton />}>
-                <MiniCard />
             </Suspense>
         </>
     )
