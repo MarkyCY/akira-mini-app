@@ -3,7 +3,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ClientComponent from "@/components/Home/client-component";
 import NavBarButtons from "@/components/Home/nav-buttons";
-
+import { AuthProvider } from "@/contexts/AuthContext";
+import AuthenticatedComponent from "@/contexts/AuthenticatedComponent";
 
 export const metadata: Metadata = {
   title: "Otaku Senpai",
@@ -27,7 +28,11 @@ export default function RootLayout({
       <body className="bg-white dark:bg-black">
         <ClientComponent />
         <div className='pt-10 pb-20' id="app">
-            {children}
+          <AuthProvider>
+            <AuthenticatedComponent>
+              {children}
+            </AuthenticatedComponent>
+          </AuthProvider>
         </div>
         <NavBarButtons />
       </body>
