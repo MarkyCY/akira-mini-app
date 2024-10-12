@@ -10,8 +10,8 @@ export default function SliderCard() {
                     <HeroVideoDialog
                         className=""
                         animationStyle="from-center"
-                        videoSrc=""
-                        thumbnailSrc="https://t4.ftcdn.net/jpg/00/09/21/15/360_F_9211505_d4hxfNtPeTfgt7AeGmoO7u79P2hwxkoQ.jpg"
+                        videoSrc="xdrkN1p9KDU"
+                        thumbnailSrc="https://i.ytimg.com/vi/xdrkN1p9KDU/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFgoSzAP&rs=AOn4CLDpTKV2c66mTRq_eWTAA3qrV3v6oA"
                         thumbnailAlt="Hero Video"
                     />
                 </div>
