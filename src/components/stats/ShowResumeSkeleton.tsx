@@ -1,7 +1,7 @@
 export default function ShowResumeSkeleton () {
     
     return (
-        <div className="w-full h-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+        <div className="w-full h-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900 animate-pulse">
                 <div className="mb-1 h-4 w-32 bg-gray-200 rounded dark:bg-neutral-700 animate-pulse"></div>
                 <div className="mb-3 h-3 w-2/3 bg-gray-200 rounded dark:bg-neutral-700 animate-pulse"></div>
 
