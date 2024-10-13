@@ -14,6 +14,24 @@ const nextConfig = {
             port: "",
             pathname: "**",
           },
+          {
+            protocol: "http",
+            hostname: "192.168.1.101",
+            port: "5000",
+            pathname: "**",
+          },
+          {
+            protocol: "https",
+            hostname: "nz9lxjqh-5000.usw3.devtunnels.ms",
+            port: "",
+            pathname: "**",
+          },
+          {
+            protocol: "https",
+            hostname: "flowbite.s3.amazonaws.com",
+            port: "",
+            pathname: "**",
+          },
         ],
       },
 };
