@@ -4,7 +4,6 @@ import { useSearchParams } from 'next/navigation';
 import Group from '@/components/Nav/GroupStats';
 import ProfileStats from '@/components/Nav/ProfileStats';
 import SocialContent from '@/components/Nav/SocialContent';
-import { useEffect } from 'react';
 import ShinyButton from '@/components/magicui/shiny-button';
 
 export default function Home() {
