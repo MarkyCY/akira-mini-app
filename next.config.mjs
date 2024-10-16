@@ -15,9 +15,9 @@ const nextConfig = {
             pathname: "**",
           },
           {
-            protocol: "http",
-            hostname: "192.168.1.101",
-            port: "5000",
+            protocol: "https",
+            hostname: "akirafastapi-oranmarcos8221-0icao7kd.leapcell.dev",
+            port: "",
             pathname: "**",
           },
           {
