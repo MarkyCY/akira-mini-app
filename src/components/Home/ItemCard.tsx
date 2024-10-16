@@ -13,6 +13,7 @@ export default function ItemCard() {
           alt="image description"
           width={640}
           height={640}
+          unoptimized
         />
       </a>
       <h1 className="absolute top-0 left-6 z-10 flex items-center justify-center w-72 h-full text-white text-4xl font-black uppercase tracking-wide">
@@ -27,6 +28,7 @@ export default function ItemCard() {
             className="w-full h-full object-cover rounded-[12px]"
             width={640}
             height={640}
+            unoptimized
           />
         </div>
         <div className='ml-2 flex-grow'>
