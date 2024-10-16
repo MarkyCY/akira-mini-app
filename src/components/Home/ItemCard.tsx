@@ -9,7 +9,7 @@ export default function ItemCard() {
       <a href="#">
         <Image
           className="rounded-xl"
-          src="/mistic_green_forest.jpg"
+          src="/mistic_green_forest.webp"
           alt="image description"
           width={640}
           height={640}
@@ -23,7 +23,7 @@ export default function ItemCard() {
         {/* <div className="size-12 bg-gradient-to-r from-amber-400/40 to-orange-800/40 rounded-[12px]"> */}
         <div className="size-14">
           <Image
-            src="/potion7.png"
+            src="/potion7.webp"
             alt="Poción Verde"
             className="w-full h-full object-cover rounded-[12px]"
             width={640}
