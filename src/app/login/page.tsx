@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 import { useRouter } from 'next/navigation';
+import WebApp from '@twa-dev/sdk';
+import { WebAppInitData } from '@/lib/WebApp';
 
 import {
     InputOTP,
@@ -11,11 +13,20 @@ import {
 } from "@/components/ui/input-otp"
 
 const LoginPage: React.FC = () => {
+
+    const [initData, setInitData] = useState<WebAppInitData | null>(null);
+
     const [password, setPassword] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
     const [mesg, setMsg] = useState('');
     const { login } = useAuth();
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setInitData(WebApp.initDataUnsafe as WebAppInitData);
+        }
+    }, []);
 
     const handleChange = (value: string) => {
         const isNumeric = /^\d+$/.test(value);
@@ -27,14 +38,16 @@ const LoginPage: React.FC = () => {
 
     const handleComplete = async (value: string) => {
         setIsDisabled(true);
-        const result = await login("MarkyWTF", value)
-        setMsg(result.message);
+        if (initData && initData.user?.username) {
+            const result = await login(initData.user?.username, value)
+            setMsg(result.message);
 
-        if (result.success) {
-            router.push('/');
-        } else {
-            setIsDisabled(false);
-            setPassword('');
+            if (result.success) {
+                router.push('/');
+            } else {
+                setIsDisabled(false);
+                setPassword('');
+            }
         }
     }
 
