@@ -6,7 +6,7 @@ import ItemCard from "@/components/Home/ItemCard";
 export default function Profile() {
 
     return (
-        <div className="grid items-start gap-2.5">
+        <div className="px-5 grid items-start gap-2.5">
             {/* <div className="px-5 pt-10 pb-24 grid items-start gap-2.5">
                 <div className="relative">
                     <input type="text" id="small_outlined" className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-black bg-transparent rounded-lg border-1 border-blue-600 appearance-none dark:text-white dark:border-blue-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
@@ -15,8 +15,9 @@ export default function Profile() {
             </div> */}
             <Suspense fallback={<MiniCardSkeleton />}>
                 <MiniCard />
-                <MiniCard />
             </Suspense>
+            <ItemCard />
+            <MiniCard />
             <ItemCard />
         </div>
     )
