@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUser = async (token: string) => {
     try {
-      const response = await fetch('http://192.168.1.101:5000/users/me/', {
+      const response = await fetch('https://akirafastapi-oranmarcos8221-0icao7kd.leapcell.dev/users/me/', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch('http://192.168.1.101:5000/token', {
+      const response = await fetch('https://akirafastapi-oranmarcos8221-0icao7kd.leapcell.dev/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

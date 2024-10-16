@@ -13,7 +13,7 @@ export default function UserView({ user }: UserViewProps) {
         <Link href={`/user/${user.user_id}`} className='flex items-center gap-3'>
             <Image 
             className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10" 
-            src={`http://192.168.1.101:5000/user/photo/${user.user_id}`}
+            src={`https://akirafastapi-oranmarcos8221-0icao7kd.leapcell.dev/user/photo/${user.user_id}`}
             alt={user.first_name} 
             width={640} 
             height={640} 

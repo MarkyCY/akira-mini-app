@@ -1,7 +1,7 @@
 'use server';
 
 export async function getGroupStats(token: string) {
-    const response = await fetch('http://192.168.1.101:5000/group_stats/', {
+    const response = await fetch('https://akirafastapi-oranmarcos8221-0icao7kd.leapcell.dev/group_stats/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
