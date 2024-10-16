@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
-import ClientComponent from "@/components/Home/client-component";
 import NavBarButtons from "@/components/Home/nav-buttons";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AuthenticatedComponent from "@/contexts/AuthenticatedComponent";
@@ -24,9 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html className="dark" lang="en">
       <body className="bg-white dark:bg-black">
-        <ClientComponent />
         <div className='pt-10 pb-20' id="app">
           <AuthProvider>
             <AuthenticatedComponent>
