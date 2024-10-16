@@ -3,11 +3,11 @@ import Image from 'next/image'
 export default function MiniCard() {
 
   return (
-    <a href="#" className="w-full h-[6.5rem] max-w-sm flex items-center py-2 pl-3 pr-2 bg-white shadow-md rounded-[13px] dark:bg-neutral-900 dark:border-neutral-900">
+    <a href="#" className="h-[6.5rem] flex items-center py-2 pl-3 pr-2 bg-white shadow-md rounded-[13px] dark:bg-neutral-900 dark:border-neutral-900">
       <div className="flex-shrink-0">
-        <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-800 rounded-[12px] flex items-center justify-center">
+        <div className="w-20 h-20 bg-gradient-to-r from-red-400/10 to-rose-800/10 rounded-[12px] flex items-center justify-center">
           <Image
-            src="/potion.png"
+            src="/potion6.png"
             alt="Poción Verde"
             className="w-full h-full object-cover rounded-[12px]"
             width={640}
@@ -16,9 +16,9 @@ export default function MiniCard() {
         </div>
       </div>
       <div className="ml-4 my-3 flex-grow">
-        <div className="text-lg font-semibold text-black dark:text-white">Poción Verde</div>
+        <div className="text-lg font-semibold text-black dark:text-white">Poción Musical</div>
         <div className="text-sm leading-4 text-neutral-500 dark:text-neutral-400">
-          Lorem ipsum dolor sit amet consectetur. 
+          Te da la oportunidad de reproducir música...
         </div>
       </div>
       <div className="w-32 text-center">
