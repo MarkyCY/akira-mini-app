@@ -69,6 +69,6 @@ const config: Config = {
     require("flowbite/plugin"),
       require("tailwindcss-animate")
 ],
-  darkMode: ["media"],
+  darkMode: ["class"],
 };
 export default config;
