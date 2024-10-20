@@ -1,7 +1,9 @@
 'use server';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function getGroupStats(token: string) {
-    const response = await fetch('https://akirafastapi-oranmarcos8221-0icao7kd.leapcell.dev/group_stats/', {
+    const response = await fetch(`${API_URL}/group_stats/`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,

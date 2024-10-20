@@ -1,4 +1,5 @@
 import Link from "next/link";
+import WebApp from "@twa-dev/sdk";
 interface LinkItem {
     href: string;
     label: string;
@@ -7,7 +8,7 @@ interface LinkItem {
 
 const links: LinkItem[] = [
     { href: "/", label: "Home", icon: "home" },
-    { href: "/game", label: "Juegos", icon: "game" },
+    { href: "/contest", label: "Concursos", icon: "game" },
     { href: "/settings", label: "Ajustes", icon: "settings" },
     { href: "/shop", label: "Tienda", icon: "shop" },
 ];
@@ -43,13 +44,38 @@ export default function NavBarButtons() {
     return (
         <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-neutral-800/50 dark:border-neutral-600/40 backdrop-blur-xl">
             <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
-                {links.map((link) => (
+                {/* {links.map((link) => (
                     <Link key={link.href} href={link.href} className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-200/30 group">
                         {icons[link.icon]}
                         <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-neutral-900">
                             {link.label}
                         </span>
                     </Link>
+                ))} */}
+                {links.map((link) => (
+                    (link.href === "/game" || link.href === "/settings") && typeof window !== 'undefined' ? (
+                        <button
+                            key={link.href}
+                            onClick={() => WebApp.showAlert("🚧 En desarrollo")}
+                            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-200/30 group"
+                        >
+                            {icons[link.icon]}
+                            <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-neutral-900">
+                                {link.label}
+                            </span>
+                        </button>
+                    ) : (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-200/30 group"
+                        >
+                            {icons[link.icon]}
+                            <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-neutral-900">
+                                {link.label}
+                            </span>
+                        </Link>
+                    )
                 ))}
             </div>
         </div>

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import SliderContentSkeleton from "../Home/SliderContentSkeleton";
-import SliderContent from "../Home/SliderContent";
+import SliderContentSkeleton from "../Home/Social/SliderContentSkeleton";
+import SliderContent from "../Home/Social/SliderContent";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
 

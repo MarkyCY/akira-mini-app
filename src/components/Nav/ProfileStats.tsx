@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import ShowDataSkeleton from "../Home/ShowDataSkeleton";
-import ShowData from "../Home/ShowData";
+import ShowDataSkeleton from "../Home/Profile/ShowDataSkeleton";
+import ShowData from "../Home/Profile/ShowData";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
 

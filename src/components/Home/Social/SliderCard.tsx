@@ -1,4 +1,4 @@
-import HeroVideoDialog from '../magicui/hero-video-dialog'
+import HeroVideoDialog from '../../magicui/hero-video-dialog'
 
 export default function SliderCard() {
 

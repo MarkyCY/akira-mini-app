@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import MiniCard from "@/components/Home/MiniCard";
-import MiniCardSkeleton from "@/components/Home/MiniCardSkeleton";
-import ItemCard from "@/components/Home/ItemCard";
+import MiniCard from "@/components/Shop/MiniCard";
+import MiniCardSkeleton from "@/components/Shop/MiniCardSkeleton";
+import ItemCard from "@/components/Shop/ItemCard";
 
 export default function Profile() {
 
@@ -16,8 +16,6 @@ export default function Profile() {
             <Suspense fallback={<MiniCardSkeleton />}>
                 <MiniCard />
             </Suspense>
-            <ItemCard />
-            <MiniCard />
             <ItemCard />
         </div>
     )
