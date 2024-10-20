@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html className="dark" lang="en">
       <body className="bg-white dark:bg-black">
-        <div className='pt-10 pb-20' id="app">
+        <div className='pt-4 pb-20' id="app">
           <AuthProvider>
             <AuthenticatedComponent>
               {children}
