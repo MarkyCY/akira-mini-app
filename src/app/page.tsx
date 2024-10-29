@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="pl-5 pb-3 flex gap-3">
+      <div className="pb-3 flex gap-3">
         <div onClick={() => handleComponentChange('grupo')} className="cursor-pointer">
           <ShinyButton
             active={currentGroup === 'grupo' ? true : false}
@@ -62,7 +62,7 @@ export default function Home() {
         </div>
       </div >
 
-      <div className="px-5 grid items-start gap-2.5">
+      <div className="grid items-start gap-3">
         {getComponentByParam()}
       </div>
     </>
