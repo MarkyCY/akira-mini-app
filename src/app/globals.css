@@ -113,3 +113,30 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Contenedor del marquee */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+/* Contenido animado del marquee */
+.marquee-content {
+  display: inline-flex;
+  animation: scroll 10s linear infinite;
+}
+
+.marquee-content span {
+  padding-right: 2rem; /* Espacio entre los textos */
+}
+
+/* Animación */
+@keyframes scroll {
+  0% {
+      transform: translateX(0%);
+  }
+  100% {
+      transform: translateX(-50%);
+  }
+}
