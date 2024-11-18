@@ -1,14 +1,14 @@
-"use client"
+"use client";
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { fetchUser, login as serverLogin } from '@/contexts/ServerActions';
 
 interface AuthContextType {
   user: any;
   login: (username: string, password: string) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,54 +18,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const token = Cookies.get('token');
     if (token) {
-      fetchUser(token);
+      fetchUser(token)
+        .then(setUser)
+        .catch((error) => {
+          console.error(error);
+          Cookies.remove('token');
+        });
     }
   }, []);
 
-  const fetchUser = async (token: string) => {
-    try {
-      const response = await fetch(`${API_URL}/users/me/`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Error al obtener el usuario');
-      }
-      const data = await response.json();
-      setUser(data);
-    } catch (error) {
-      console.error(error);
-      Cookies.remove('token');
-    }
-  };
-
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json',
-        },
-        body: `grant_type=password&username=${username}&password=${password}`,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return { success: false, message: errorData.detail || 'Error en la autenticación' };
+      const token = await serverLogin(username, password);
+      if (!token) {
+        return { success: false, message: 'Error en la autenticación' };
       }
-
-      const data = await response.json();
-      const token = data.access_token;
       Cookies.set('token', token);
-      await fetchUser(token);
+      const userData = await fetchUser(token);
+      setUser(userData);
       return { success: true, message: 'Autenticación exitosa' };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al iniciar sesión:', error);
-      return { success: false, message: 'Error de red o servidor' };
+      return { success: false, message: error.message };
     }
   };
 
