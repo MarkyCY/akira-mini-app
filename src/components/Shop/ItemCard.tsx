@@ -5,7 +5,7 @@ export default function ItemCard() {
   return (
 
     // <figure className="relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0">
-    <figure className="relative">
+    <figure className="relative shadow-md">
       <a href="#">
         <Image
           className="rounded-xl"
@@ -19,7 +19,7 @@ export default function ItemCard() {
       <h1 className="absolute top-0 left-6 z-10 flex items-center justify-center w-72 h-full text-white text-4xl font-black uppercase tracking-wide">
         Si lees esto eres super gei pero no mas que slime.
       </h1>
-      <figcaption className="absolute flex items-center box-border h-20 pl-2 w-full rounded-b-xl bottom-0 text-lg text-white bg-gray-600/10 backdrop-blur-md">
+      <figcaption className="absolute flex items-center box-border h-20 pl-2 w-full rounded-b-xl bottom-0 text-lg text-white bg-neutral-300/5 dark:bg-neutral-600/10 backdrop-blur-sm">
         {/* <div className="size-12 bg-gradient-to-r from-amber-400/40 to-orange-800/40 rounded-[12px]"> */}
         <div className="size-14">
           <Image
@@ -38,9 +38,9 @@ export default function ItemCard() {
           </h2>
         </div>
         <div className="w-32 text-center">
-        <div className="text-sm text-neutral-500 dark:text-neutral-400">Reutil.</div>
-        <div className="text-xl font-bold text-black dark:text-white">4 V/D</div>
-        <div className="text-xs text-neutral-500 dark:text-neutral-400">30 días</div>
+        <div className="text-sm text-neutral-300 dark:text-neutral-400">Reutil.</div>
+        <div className="text-xl font-bold text-white dark:text-white">4 V/D</div>
+        <div className="text-xs text-neutral-300 dark:text-neutral-400">30 días</div>
       </div>
       </figcaption>
     </figure>
