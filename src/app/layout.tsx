@@ -14,7 +14,8 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false
+  userScalable: false,
+  themeColor: "#000000",
 }
 
 export default function RootLayout({
@@ -24,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html className="dark" lang="en">
-      <body className="bg-white dark:bg-black">
-        <div className='pt-4 pb-20' id="app">
+      <body className="bg-white dark:bg-black h-screen">
+        <div className='pt-4 px-4 pb-20' id="app">
           <AuthProvider>
             <AuthenticatedComponent>
               {children}

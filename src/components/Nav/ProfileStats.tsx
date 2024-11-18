@@ -7,7 +7,7 @@ import SparklesText from "../magicui/sparkles-text";
 export default function ProfileStats() {
     return (
         <>
-            <div className="w-full h-auto max-w-sm pl-2 pt-3" id="header">
+            <div className="w-full h-auto max-w-sm pt-3" id="header">
                 <BlurFade delay={0} duration={0.50} inView>
                     <SparklesText sparklesCount={5} className="text-xl font-normal tracking-tighter dark:text-neutral-200" text="Perfil de usuario" />
                 </BlurFade>

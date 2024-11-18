@@ -35,7 +35,7 @@ export default function Group() {
             Cookies.set('groupStatsDate', new Date().toISOString(), { expires: 1 }); // Guardar fecha de la solicitud por 1 día
         }
     }
-    
+
 
     useEffect(() => {
         const savedData = Cookies.get('groupStatsData') || null;
@@ -50,7 +50,7 @@ export default function Group() {
 
     return (
         <>
-            <div className="w-full h-auto max-w-sm pl-3 pt-3" id="header">
+            <div className="w-full h-auto max-w-sm pt-3" id="header">
                 <BlurFade delay={0.25} inView>
                     <SparklesText className="text-4xl pb-2 font-semibold tracking-tighter dark:text-neutral-200" text="Hola amigo! 👋" />
                 </BlurFade>
@@ -60,18 +60,16 @@ export default function Group() {
                     </span>
                 </BlurFade>
             </div>
-            <>
-                {/* Datos cargados, renderizar componentes */}
-                <Suspense fallback={<ShowResumeSkeleton />}>
-                    {data ? <ShowResume data={data} /> : <ShowResumeSkeleton />}
-                </Suspense>
-                <Suspense fallback={<TopUserSkeleton />}>
-                    {data ? <TopAdminWork data={data.top_admins} /> : <TopUserSkeleton />}
-                </Suspense>
-                <Suspense fallback={<TopUserSkeleton />}>
-                    {data ? <TopUserPost data={data.top_users} /> : <TopUserSkeleton />}
-                </Suspense>
-            </>
+            {/* Datos cargados, renderizar componentes */}
+            <Suspense fallback={<ShowResumeSkeleton />}>
+                {data ? <ShowResume data={data} /> : <ShowResumeSkeleton />}
+            </Suspense>
+            <Suspense fallback={<TopUserSkeleton />}>
+                {data ? <TopAdminWork data={data.top_admins} /> : <TopUserSkeleton />}
+            </Suspense>
+            <Suspense fallback={<TopUserSkeleton />}>
+                {data ? <TopUserPost data={data.top_users} /> : <TopUserSkeleton />}
+            </Suspense>
         </>
     );
 }
