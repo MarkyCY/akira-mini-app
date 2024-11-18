@@ -53,29 +53,16 @@ export default function NavBarButtons() {
                     </Link>
                 ))} */}
                 {links.map((link) => (
-                    (link.href === "/game" || link.href === "/settings") && typeof window !== 'undefined' ? (
-                        <button
-                            key={link.href}
-                            onClick={() => WebApp.showAlert("🚧 En desarrollo")}
-                            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-200/30 group"
-                        >
-                            {icons[link.icon]}
-                            <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-neutral-900">
-                                {link.label}
-                            </span>
-                        </button>
-                    ) : (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-200/30 group"
-                        >
-                            {icons[link.icon]}
-                            <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-neutral-900">
-                                {link.label}
-                            </span>
-                        </Link>
-                    )
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-neutral-200/30 group"
+                    >
+                        {icons[link.icon]}
+                        <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-neutral-900">
+                            {link.label}
+                        </span>
+                    </Link>
                 ))}
             </div>
         </div>
