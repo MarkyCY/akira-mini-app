@@ -3,8 +3,14 @@ import ShowDataSkeleton from "../Home/Profile/ShowDataSkeleton";
 import ShowData from "../Home/Profile/ShowData";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
+import LoginAnimeList from "../MyAnimeList/MAL_Auth";
+import Cookies from 'js-cookie';
+import MAL_Stats from "../MyAnimeList/MAL_Stats";
 
 export default function ProfileStats() {
+    const malToken = Cookies.get('mal_token') || '';
+    const malRefreshToken = Cookies.get('mal_refresh_token') || '';
+    // Cookies.remove('token');
     return (
         <>
             <div className="w-full h-auto max-w-sm pt-3" id="header">
@@ -15,6 +21,8 @@ export default function ProfileStats() {
             <Suspense fallback={<ShowDataSkeleton />}>
                 <ShowData />
             </Suspense>
+            {/* Esto hay que corregirlo luego para poder usar el refresh token */}
+            {malToken ? <MAL_Stats /> : <LoginAnimeList />}
         </>
     )
 }
