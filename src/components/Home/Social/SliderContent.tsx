@@ -15,7 +15,7 @@ export default function SliderContent() {
         <div className='relative overflow-hidden' style={customStyles}>
             <div data-radix-scroll-area-viewport="" className="h-full w-full rounded-[inherit]" style={{ overflow: 'auto' }}>
                 <div style={{ minWidth: '100%', display: 'table' }}>
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 pb-3">
                         <Suspense fallback={<SliderCardSkeleton />}>
                             <SliderCard />
                             <SliderCard />

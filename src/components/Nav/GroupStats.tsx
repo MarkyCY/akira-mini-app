@@ -25,7 +25,7 @@ const isSameDay = (storedDate: string | null) => {
 export default function Group() {
     const [data, setData] = useState<StatsDaily | null>(null);
 
-    const token = Cookies.get('token') || '';
+    const token = Cookies.get('token') || null;
 
     const fetchData = async () => {
         if (token) {
@@ -35,7 +35,6 @@ export default function Group() {
             Cookies.set('groupStatsDate', new Date().toISOString(), { expires: 1 }); // Guardar fecha de la solicitud por 1 día
         }
     }
-
 
     useEffect(() => {
         const savedData = Cookies.get('groupStatsData') || null;
