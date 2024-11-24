@@ -5,9 +5,10 @@ import Group from '@/components/Nav/GroupStats';
 import ProfileStats from '@/components/Nav/ProfileStats';
 import SocialContent from '@/components/Nav/SocialContent';
 import ShinyButton from '@/components/magicui/shiny-button';
+import NewsContent from '@/components/Nav/NewsContest';
 
 export default function Home() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() as any;
   const params = new URLSearchParams(searchParams);
 
   // Función para cambiar el componente basado en el parámetro de la URL
@@ -29,6 +30,8 @@ export default function Home() {
         return <ProfileStats />;
       case 'social':
         return <SocialContent />;
+      case 'news':
+        return <NewsContent />;
       default:
         return <Group />;
     }
@@ -38,7 +41,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="pb-3 flex gap-3">
+      <div className="pb-3 flex gap-1">
         <div onClick={() => handleComponentChange('grupo')} className="cursor-pointer">
           <ShinyButton
             active={currentGroup === 'grupo' ? true : false}
@@ -58,6 +61,13 @@ export default function Home() {
             active={currentGroup === 'social' ? true : false}
             text="📺 Social"
             className={currentGroup === 'social' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
+          />
+        </div>
+        <div onClick={() => handleComponentChange('news')} className="cursor-pointer">
+          <ShinyButton
+            active={currentGroup === 'news' ? true : false}
+            text="🗞 News"
+            className={currentGroup === 'news' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
         </div>
       </div >
