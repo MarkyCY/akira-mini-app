@@ -1,4 +1,5 @@
 import { StatsDaily } from "@/lib/StatsDaily";
+import BlurFade from "../magicui/blur-fade";
 
 export default function ShowResume({ data }: { data: StatsDaily }) {
     const getColor = (value: number) => {
@@ -38,7 +39,7 @@ export default function ShowResume({ data }: { data: StatsDaily }) {
     const date_range = `${min_date_str} — ${max_date_str}`;
 
     return (
-        <div className="w-full h-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+        <BlurFade delay={0.10} duration={0.50} inView className="w-full h-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
             <h5 className="mb-1 text-sm font-semibold text-gray-700 dark:text-white">
                 Resumen
             </h5>
@@ -73,6 +74,6 @@ export default function ShowResume({ data }: { data: StatsDaily }) {
                     <p className="text-xs font-normal text-gray-400 dark:text-neutral-500">Miembros que publican</p>
                 </div>
             </div>
-        </div>
+        </BlurFade>
     );
 }

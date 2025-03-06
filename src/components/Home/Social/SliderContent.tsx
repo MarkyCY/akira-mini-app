@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import SliderCard from './SliderCard';
 import { Suspense } from 'react';
 import SliderCardSkeleton from './SliderCardSkeleton';

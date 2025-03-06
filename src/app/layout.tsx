@@ -1,22 +1,20 @@
-import type { Metadata, Viewport } from "next";
-
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import NavBarButtons from "@/components/Home/nav-buttons";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/components/theme-provider";
 import AuthenticatedComponent from "@/contexts/AuthenticatedComponent";
+
+const TelegramInitializer = dynamic(
+  () => import("@/components/tg/Initializer"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "Otaku Senpai",
   description: "La app de los Otakus de Cuba",
 };
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  themeColor: "#000000",
-}
 
 export default function RootLayout({
   children,
@@ -24,16 +22,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className="dark" lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-black h-screen">
-        <div className='pt-4 px-4 pb-20' id="app">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <AuthProvider>
-            <AuthenticatedComponent>
-              {children}
-            </AuthenticatedComponent>
+            <TelegramInitializer />
+            <div className="pt-4 px-4 pb-20" id="app">
+              <AuthenticatedComponent>{children}</AuthenticatedComponent>
+            </div>
+            <NavBarButtons />
           </AuthProvider>
-        </div>
-        <NavBarButtons />
+        </ThemeProvider>
       </body>
     </html>
   );

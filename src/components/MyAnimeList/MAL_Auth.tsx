@@ -1,5 +1,7 @@
 "use client";
 
+import BlurFade from "../magicui/blur-fade";
+
 function generateCodeVerifier() {
   return [...Array(80)]
     .map(() => Math.random().toString(36)[2])
@@ -23,11 +25,11 @@ export default function LoginAnimeList() {
   };
 
   return (
-    <div className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+    <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
       <h1 className="text-xl font-bold pb-5">Iniciar Sesión en MyAnimeList</h1>
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={loginWithMyAnimeList}>
         Iniciar Sesión
       </button>
-    </div>
+    </BlurFade>
   );
 }

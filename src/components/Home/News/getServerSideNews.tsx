@@ -15,16 +15,15 @@ export async function getServerSideNews(token: string) {
         });
         const textData = await response.json();
 
-        const entries: Entry[] = textData.slice(0, 5).map((entry: any) => ({
+        const entries: Entry[] = textData.slice(0, 20).map((entry: any) => ({
             id: entry.id || '',
-            title: entry.title || '',
-            link: entry.link || '',
+            title: entry.ttl || '',
+            link: entry.lnk || '',
             published: entry.publ || '',
             updated: entry.updt || '',
-            summary: entry.summary || '',
-            category: entry.category || '',
+            summary: entry.summ || '',
+            category: entry.catgy || '',
         }));
-
         return entries;
 
     } catch (error) {

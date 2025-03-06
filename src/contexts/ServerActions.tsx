@@ -26,9 +26,9 @@ export const fetchUser = async (token: string) => {
   }
 };
 
-export const login = async (username: string, password: string) => {
+export const login = async (user_id: number) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+  const GLOBAL_PASS = process.env.GLOBAL_PASS;
   try {
     const response = await fetch(`${API_URL}/token`, {
       method: 'POST',
@@ -36,9 +36,9 @@ export const login = async (username: string, password: string) => {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/json',
       },
-      body: `grant_type=password&username=${username}&password=${password}`,
+      body: `grant_type=password&username=${user_id}&user_id=${user_id}&password=${GLOBAL_PASS}`,
     });
-
+    
     if (!response.ok) {
       const errorData = await response.json();
       return { success: false, message: errorData.detail || 'Error en la autenticación' };

@@ -1,74 +1,81 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 import { useRouter } from 'next/navigation';
 import WebApp from '@twa-dev/sdk';
-import { WebAppInitData } from '@/lib/WebApp';
-
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from "@/components/ui/input-otp"
+import { MultiStepLoader as Loader } from "@/components/ui/multi-step-loading";
 
 const LoginPage: React.FC = () => {
+    const [clientid, setClientid] = useState<number>();
 
-    const [initData, setInitData] = useState<WebAppInitData | null>(null);
-
-    const [password, setPassword] = useState('');
-    const [isDisabled, setIsDisabled] = useState(false);
-    const [mesg, setMsg] = useState('');
+    const [step, setStep] = useState(0);
+    const [mesg, setMsg] = useState('Intentando iniciar sesión...');
+    const [error, setError] = useState(false);
     const { login } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setInitData(WebApp.initDataUnsafe as WebAppInitData);
-        }
-    }, []);
+        setStep(1);
+        if (typeof window !== "undefined") {
+            WebApp.ready();
+            const params = new URLSearchParams(WebApp.initData);
+            const userData = decodeURIComponent(params.get('user') || '');
+            const user = JSON.parse(userData);
 
-    const handleChange = (value: string) => {
-        const isNumeric = /^\d+$/.test(value);
-
-        if (isNumeric || value === '') {
-            setPassword(value);
-        }
-    }
-
-    const handleComplete = async (value: string) => {
-        setIsDisabled(true);
-        if (initData && initData.user?.username) {
-            const result = await login(initData.user?.username, value)
-            setMsg(result.message);
-
-            if (result.success) {
-                router.push('/');
-            } else {
-                setIsDisabled(false);
-                setPassword('');
+            if (!user.username) {
+                setMsg('No tienes nombre de usuario');
+                return;
             }
+            setClientid(user.id);
+
+            // setClientid(873919300);
+
+            setStep(2);
+            if (clientid) {
+                handleComplete(clientid)
+            }
+        };
+    }, [clientid]);
+
+    const handleComplete = async (clientid: number) => {
+    try {
+        const result = await login(clientid);
+        setMsg(result.message);
+        setStep(3); // 3️⃣ Intentando autenticar en la API
+    
+        if (result.success) {
+          setStep(4); // 4️⃣ Autenticación exitosa, redirigiendo
+          setTimeout(() => router.push("/"), 500); // Pequeña pausa antes de redirigir
         }
+    } catch (error: any) {
+      setError(true);
+      setMsg(error.message);
+      return
     }
+  };
 
-    return (
-        <div className="fixed flex flex-col space-y-3 inset-x-0 bottom-12 items-center justify-center h-screen">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-[150px] h-[150px] pb-5 text-neutral-100 dark:text-white">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm.002 7a2 2 0 0 0 -1.995 1.85l-.005 .15l.005 .15a2 2 0 0 0 .995 1.581v1.769l.007 .117a1 1 0 0 0 1.993 -.117l.001 -1.768a2 2 0 0 0 -1.001 -3.732z" />
-            </svg>
+  const loadingStates = [
+    { text: "Conectando con Telegram..." },
+    { text: "Obteniendo datos del usuario..." },
+    { text: "Autenticando en la API..." },
+    { text: "¡Inicio de sesión exitoso! Redirigiendo..." },
+  ];
 
-            <InputOTP maxLength={4} inputMode='numeric' className="place-content-center" pattern={REGEXP_ONLY_DIGITS_AND_CHARS} value={password} onComplete={handleComplete} onChange={handleChange} disabled={isDisabled}>
-                <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                </InputOTPGroup>
-            </InputOTP>
-            <p className='dark:text-white'>{mesg}</p>
-        </div>
-    )
+  return (
+    <div className="fixed flex flex-col space-y-3 inset-x-0 bottom-12 items-center justify-center h-screen">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-[150px] h-[150px] pb-5 text-neutral-100 dark:text-white"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm.002 7a2 2 0 0 0 -1.995 1.85l-.005 .15l.005 .15a2 2 0 0 0 .995 1.581v1.769l.007 .117a1 1 0 0 0 1.993 -.117l.001 -1.768a2 2 0 0 0 -1.001 -3.732z" />
+      </svg>
+      <p className="dark:text-white">{mesg}</p>
+      <Loader loadingStates={loadingStates} loading={true} value={step} error_msg={mesg} error={error} />
+    </div>
+  );
 };
 
 export default LoginPage;

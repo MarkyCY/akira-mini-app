@@ -5,6 +5,7 @@ import { getServerSideNews } from "../Home/News/getServerSideNews";
 import { Entry } from "@/lib/getNews";
 import { MarqueeDemoVertical } from "../Home/News/MarqueeVertical";
 import Cookies from 'js-cookie';
+import OtakuLoadIcon from "../icons/otakuLoad";
 
 export default function NewsContent() {
     const [news, setNews] = useState<Entry[] | null>(null);
@@ -17,7 +18,7 @@ export default function NewsContent() {
             try {
                 const response = await getServerSideNews(token);
 
-                const expirationMinutes = 60;
+                const expirationMinutes = 10;
                 const expirationDays = expirationMinutes / (24 * 60)
 
                 const adjustedEntries = response.map((entry: Entry) => ({
@@ -43,6 +44,7 @@ export default function NewsContent() {
             setNews(JSON.parse(newsData));
             setLoading(false);
         } else {
+            Cookies.remove('NewsList');
             fetchNews();
         }
 
@@ -55,7 +57,7 @@ export default function NewsContent() {
                 </BlurFade>
             </div>
             {loading ? (
-                <div className="w-full text-center text-lg font-bold">Cargando Noticias...</div>
+                <OtakuLoadIcon className="text-neutral-200/10 w-full size-40 p-5" />
             ) : error ? (
                 <div className="w-full text-center text-lg font-bold">{error}</div>
             ) : news && (<MarqueeDemoVertical entries={news} />)}

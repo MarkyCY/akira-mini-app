@@ -25,7 +25,7 @@ export interface Period {
 
 export interface TopAdmin {
     user_id: number;
-    first_name: string;
+    first_name: string | "(Sin Nombre)";
     deleted: number;
     kicked: number;
     banned: number;
@@ -33,7 +33,7 @@ export interface TopAdmin {
 
 export interface TopUser {
     user_id: number;
-    first_name: string;
+    first_name: string | "(Sin Nombre)";
     messages: number;
     avg_chars: number;
 }

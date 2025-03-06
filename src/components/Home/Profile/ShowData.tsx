@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
 import { WebAppInitData } from '@/lib/WebApp';
+import BlurFade from '@/components/magicui/blur-fade';
 
 export default function ShowData() {
 
@@ -14,7 +15,7 @@ export default function ShowData() {
 
     return (
         <>
-            <div className="w-full h-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+            <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
                 <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
                     Telegram Data
                 </h5>
@@ -44,7 +45,7 @@ export default function ShowData() {
                         </svg>
                         Datos de guía. Nada oficial.</a>
                 </div>
-            </div>
+            </BlurFade>
         </>
     )
 }

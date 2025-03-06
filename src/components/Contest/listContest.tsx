@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { getContests } from "@/components/Contest/getContests";
 import ViewContest from "@/components/Contest/ViewContest";

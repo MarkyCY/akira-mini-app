@@ -3,10 +3,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { fetchUser, login as serverLogin } from '@/contexts/ServerActions';
+import { verifUser } from '@/components/tg/verifUser';
 
 interface AuthContextType {
   user: any;
-  login: (username: string, password: string) => Promise<{ success: boolean; message: string }>;
+  login: (user_id: number) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
 }
 
@@ -27,19 +28,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (user_id: number) => {
     try {
-      const token = await serverLogin(username, password);
+      if (user_id) {
+        const registered = await verifUser(user_id);
+        if (registered.ok === false) {
+          throw new Error("No eres miembro del grupo");
+        }
+      } 
+      
+      const token = await serverLogin(user_id);
       if (!token) {
-        return { success: false, message: 'Error en la autenticación' };
+        throw new Error("Error en la autenticación");
       }
       Cookies.set('token', token);
       const userData = await fetchUser(token);
       setUser(userData);
       return { success: true, message: 'Autenticación exitosa' };
     } catch (error: any) {
-      console.error('Error al iniciar sesión:', error);
-      return { success: false, message: error.message };
+      throw new Error(error.message);
     }
   };
 

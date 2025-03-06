@@ -42,10 +42,11 @@ export default function ReviewCard({
     }, [link]);
 
     return (
-        <a 
-        href={`https://translate.google.com/translate?hl=es&sl=auto&tl=es&u=${encodeURIComponent(link)}`}
-        rel="noopener noreferrer"
-        className="rounded-xl shadow-md"
+        <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-xl shadow-md"
         >
             <figure
                 className={cn(
@@ -58,23 +59,33 @@ export default function ReviewCard({
             >
                 {ogImage && (
                     <img
+                        crossOrigin="anonymous"
                         src={ogImage}
                         alt="OG Image"
-                        className="absolute inset-0 w-96 h-96 object-cover z-0"
+                        className="absolute inset-0 w-full h-full object-cover z-0"
                     />
                 )}
 
-                <div className="absolute inset-0 w-full h-full bg-black/60 backdrop-blur-sm dark:bg-black/80"></div>
+                <div className="absolute inset-0 w-full h-full bg-black/70 dark:bg-black/80"></div>
 
                 <div className="relative flex flex-row items-center gap-3">
                     <div className="flex flex-col">
-                        <figcaption className="text-base font-medium text-gray-200">
+                        <figcaption className="text-base font-medium text-gray-100 line-clamp-3">
                             {title}
                         </figcaption>
                     </div>
                 </div>
-                <blockquote className="relative mt-2 text-sm text-gray-300">{summary}</blockquote>
-                <div className='relative pt-5 text-xs text-gray-300 dark:text-neutral-400 flex gap-10'>
+                <blockquote className="relative mt-2 text-sm text-gray-200">
+                    {summary?.replace(/<[^>]*>/g, '')}
+                </blockquote>
+                <div className='relative pt-4 text-xs text-gray-300 dark:text-neutral-400 flex-grow gap-1'>
+                    Categoría: {category.map((c, i) => (
+                        <span key={i}>
+                            {i === category.length - 1 ? c : `${c}, `}
+                        </span>
+                    ))}
+                </div>
+                <div className='relative pt-2 text-xs text-gray-300 dark:text-neutral-400 flex gap-10'>
                     <p>Publicado: {new Date(published).toLocaleDateString()}</p>
                     <p>Actualizado: {new Date(updated).toLocaleDateString()}</p>
                 </div>

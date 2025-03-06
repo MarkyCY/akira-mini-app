@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { getMALStats } from './getMALStats';
 
 import { MalUser } from '@/lib/MyAnimeList';
+import BlurFade from '../magicui/blur-fade';
 
 export default function MAL_Stats() {
 
@@ -33,7 +34,7 @@ export default function MAL_Stats() {
     }, []);
 
     return (
-        <div className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+        <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
             <h1 className='text-xl font-bold pb-5'>Estadísticas de MyAnimeList</h1>
             {stats && stats.anime_statistics ? (
                 <>
@@ -109,6 +110,6 @@ export default function MAL_Stats() {
                     </div>
                 </>
             ) : <p className='text-sm text-center font-normal text-gray-500 dark:text-gray-400'>Cargando...</p>}
-        </div>
+        </BlurFade>
     )
 }

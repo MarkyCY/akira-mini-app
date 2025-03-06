@@ -5,6 +5,7 @@ import { AnimatedSubscribeButton } from '../magicui/animated-subscribe-button';
 import ArrowIcon from '../icons/arrow';
 import CheckIcon from '../icons/check';
 import AvatarCircles from "@/components/magicui/avatar-circles";
+import BlurFade from '../magicui/blur-fade';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -88,7 +89,7 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
     const [imgSrc, setImgSrc] = useState(contest.img);
 
     return (
-        <div
+        <BlurFade delay={0.1} duration={0.50} inView 
             className={`transition-none overflow-auto duration-75 ease-in ${expanded ? 'h-screen w-96 fixed top-0 z-50 bg-neutral-50 dark:bg-black' : ' w-full shadow-md rounded-xl border border-neutral-600/10 dark:border-neutral-300/10'
                 } `}
         >
@@ -190,6 +191,6 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
 
                 </div>
             </div>
-        </div>
+        </BlurFade>
     );
 }

@@ -15,7 +15,7 @@ export default async function handler(req, res) {
           grant_type: "refresh_token",
           refresh_token: refreshToken,
           client_id: process.env.NEXT_PUBLIC_MAL_CLIENT_ID,
-          client_secret: process.env.NEXT_PUBLIC_MAL_CLIENT_SECRET,
+          client_secret: process.env.MAL_CLIENT_SECRET,
         }),
         {
           headers: {

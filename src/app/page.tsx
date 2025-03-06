@@ -5,7 +5,7 @@ import Group from '@/components/Nav/GroupStats';
 import ProfileStats from '@/components/Nav/ProfileStats';
 import SocialContent from '@/components/Nav/SocialContent';
 import ShinyButton from '@/components/magicui/shiny-button';
-import NewsContent from '@/components/Nav/NewsContest';
+import ShopContent from '@/components/Nav/ShopContent';
 
 export default function Home() {
   const searchParams = useSearchParams() as any;
@@ -30,8 +30,8 @@ export default function Home() {
         return <ProfileStats />;
       case 'social':
         return <SocialContent />;
-      case 'news':
-        return <NewsContent />;
+      case 'shop':
+        return <ShopContent />;
       default:
         return <Group />;
     }
@@ -63,11 +63,11 @@ export default function Home() {
             className={currentGroup === 'social' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
         </div>
-        <div onClick={() => handleComponentChange('news')} className="cursor-pointer">
+        <div onClick={() => handleComponentChange('shop')} className="cursor-pointer">
           <ShinyButton
-            active={currentGroup === 'news' ? true : false}
-            text="🗞 News"
-            className={currentGroup === 'news' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
+            active={currentGroup === 'shop' ? true : false}
+            text="🛒 Shop"
+            className={currentGroup === 'shop' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
         </div>
       </div >

@@ -50,7 +50,7 @@ export default function Group() {
     return (
         <>
             <div className="w-full h-auto max-w-sm pt-3" id="header">
-                <BlurFade delay={0.25} inView>
+                <BlurFade delay={0} inView>
                     <SparklesText className="text-4xl pb-2 font-semibold tracking-tighter dark:text-neutral-200" text="Hola amigo! 👋" />
                 </BlurFade>
                 <BlurFade delay={0.25 * 2} inView>

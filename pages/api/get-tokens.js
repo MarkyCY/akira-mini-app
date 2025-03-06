@@ -14,7 +14,7 @@ export default async function handler(req, res) {
         new URLSearchParams({
           grant_type: "authorization_code",
           client_id: process.env.NEXT_PUBLIC_MAL_CLIENT_ID,
-          client_secret: process.env.NEXT_PUBLIC_MAL_CLIENT_SECRET,
+          client_secret: process.env.MAL_CLIENT_SECRET,
           code,
           redirect_uri: redirectUri,
           code_verifier: codeVerifier,

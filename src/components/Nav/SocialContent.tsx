@@ -5,7 +5,7 @@ import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
 
 export default function SocialContent() {
-   
+
     return (
         <>
             <div className="w-full h-auto max-w-sm pt-3" id="header">
@@ -13,7 +13,6 @@ export default function SocialContent() {
                     <SparklesText sparklesCount={5} className="text-xl font-normal tracking-tighter dark:text-neutral-200" text="Redes Sociales" />
                 </BlurFade>
             </div>
-
             <Suspense fallback={<SliderContentSkeleton />}>
                 <SliderContent />
             </Suspense>

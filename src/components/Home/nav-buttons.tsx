@@ -1,5 +1,5 @@
 import Link from "next/link";
-import WebApp from "@twa-dev/sdk";
+// import WebApp from "@twa-dev/sdk";
 interface LinkItem {
     href: string;
     label: string;
@@ -10,7 +10,7 @@ const links: LinkItem[] = [
     { href: "/", label: "Home", icon: "home" },
     { href: "/contest", label: "Concursos", icon: "game" },
     { href: "/settings", label: "Ajustes", icon: "settings" },
-    { href: "/shop", label: "Tienda", icon: "shop" },
+    { href: "/space", label: "Space", icon: "shop" },
 ];
 
 const icons = {
