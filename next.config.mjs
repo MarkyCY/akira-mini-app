@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['next-auth'],
     images: {
         remotePatterns: [
           {
@@ -32,8 +33,15 @@ const nextConfig = {
             port: "",
             pathname: "**",
           },
+          {
+            protocol: "https",
+            hostname: "www.animenewsnetwork.com",
+            port: "",
+            pathname: "**",
+          },
         ],
       },
 };
+
 
 export default nextConfig;
