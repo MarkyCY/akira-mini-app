@@ -10,6 +10,8 @@ import { StatsDaily } from "@/lib/StatsDaily";
 import TopAdminWork from "../stats/topAdmin";
 import Cookies from 'js-cookie';
 
+import { useSession, signOut } from 'next-auth/react';
+
 const isSameDay = (storedDate: string | null) => {
     if (!storedDate) return false;
     const currentDate = new Date();
@@ -24,19 +26,27 @@ const isSameDay = (storedDate: string | null) => {
 
 export default function Group() {
     const [data, setData] = useState<StatsDaily | null>(null);
+    const { data: session, status } = useSession();
 
-    const token = Cookies.get('token') || null;
-
-    const fetchData = async () => {
-        if (token) {
-            const responseData = await getGroupStats(token);
-            setData(responseData);
-            Cookies.set('groupStatsData', JSON.stringify(responseData), { expires: 1 }); // Guardar datos por 1 día
-            Cookies.set('groupStatsDate', new Date().toISOString(), { expires: 1 }); // Guardar fecha de la solicitud por 1 día
-        }
-    }
+    const token = session?.user?.accessToken || null;
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (token) {
+                    const responseData = await getGroupStats(token);
+                    setData(responseData);
+                    Cookies.set('groupStatsData', JSON.stringify(responseData), { expires: 1 }); // Guardar datos por 1 día
+                    Cookies.set('groupStatsDate', new Date().toISOString(), { expires: 1 }); // Guardar fecha de la solicitud por 1 día
+                }
+            } catch (error: any) {
+                console.error('Error al obtener los datos:', error);
+                if (error.message === '401') {
+                    signOut({ callbackUrl: '/' });
+                }
+            }
+        }
+
         const savedData = Cookies.get('groupStatsData') || null;
         const savedDate = Cookies.get('groupStatsDate') || null;
 
@@ -45,7 +55,7 @@ export default function Group() {
         } else {
             fetchData();
         }
-    }, []);
+    }, [token]);
 
     return (
         <>

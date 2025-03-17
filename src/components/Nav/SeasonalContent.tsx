@@ -6,6 +6,7 @@ import SeasonButton from "../Season/seasonButtons";
 import Image from "next/image";
 import { fetchSeasonalAnime } from "@/ServerActions/getSeasonGQL";
 import OtakuLoadIcon from "../icons/otakuLoad";
+import { useTheme } from "next-themes";
 
 export default function ShopContent() {
     const season = (() => {
@@ -23,38 +24,21 @@ export default function ShopContent() {
     const [hasNextPage, setHasNextPage] = useState(true);
     const [loading, setLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false); // Nuevo estado
-
+    const { theme } = useTheme()
+    
     const changeSeason = (Season: string) => {
         setSelected(Season);
         setPage(1);
     };
 
-    // Función para cargar datos
-    const loadSeasonData = async (reset = false) => {
-        if (loading || !hasNextPage || isFetching) return; // Evita cargas múltiples
-
-        setIsFetching(true); // Bloquea nuevas cargas
-        setLoading(true);
-
-        try {
-            const data = await fetchSeasonalAnime(page, 10, selected, new Date().getFullYear());
-            setSeasonData(prev => reset ? data.media : [...prev, ...data.media]);
-            setHasNextPage(data.pageInfo.hasNextPage);
-            setPage(prev => prev + 1);
-        } catch (error) {
-            console.error("Error loading data:", error);
-        } finally {
-            setIsFetching(false); // Desbloquea nuevas cargas
-            setLoading(false);
-        }
-    };
+    
 
     // Cargar datos iniciales
     useEffect(() => {
         setSeasonData([]);
         setPage(1);
         setHasNextPage(true);
-        loadSeasonData(true);
+        loadSeasonData(1, selected, setSeasonData, setHasNextPage, setPage, setLoading, setIsFetching, true);
     }, [selected]);
 
     // Scroll infinito usando IntersectionObserver
@@ -64,7 +48,7 @@ export default function ShopContent() {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    loadSeasonData();
+                    loadSeasonData(page, selected, setSeasonData, setHasNextPage, setPage, setLoading, setIsFetching);
                 }
             },
             { rootMargin: '100px' } // Reduce el margen para evitar múltiples detecciones
@@ -76,7 +60,7 @@ export default function ShopContent() {
         return () => {
             if (target) observer.unobserve(target);
         };
-    }, [hasNextPage, loading, isFetching]); // Añade isFetching como dependencia
+    }, [hasNextPage, loading, isFetching, page, selected]); // Añade isFetching como dependencia
 
     const formatStartDate = (startDate: any) => {
         const { year, month, day } = startDate;
@@ -155,10 +139,37 @@ export default function ShopContent() {
             
             {loading && (
                 <div>
-                    <OtakuLoadIcon className="text-neutral-200/10 w-full size-40 p-5" />
+                    <OtakuLoadIcon color={theme === "dark" ? "#ea527d" : "#b50638"} className="w-full size-40 p-5" />
                 </div>
             )}
             <div id="scroll-anchor" style={{ height: "1px" }}></div>
         </div>
     );
 }
+
+export const loadSeasonData = async (
+    page: number,
+    selected: string,
+    setSeasonData: (data: ((prev: any[]) => any[]) | any[]) => void,
+    setHasNextPage: (hasNext: boolean) => void,
+    setPage: (page: ((prev: number) => number) | number) => void,
+    setLoading: (loading: boolean) => void,
+    setIsFetching: (fetching: boolean) => void,
+    reset: boolean = false
+) => {
+    setIsFetching(true);
+    setLoading(true);
+
+    try {
+        const data = await fetchSeasonalAnime(page, 10, selected, new Date().getFullYear());
+
+        setSeasonData(prev => (reset ? data.media : [...prev, ...data.media]));
+        setHasNextPage(data.pageInfo.hasNextPage);
+        setPage(prev => prev + 1);
+    } catch (error) {
+        console.error("Error loading data:", error);
+    } finally {
+        setIsFetching(false);
+        setLoading(false);
+    }
+};

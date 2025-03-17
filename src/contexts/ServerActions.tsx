@@ -30,6 +30,7 @@ export const login = async (user_id: number) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const GLOBAL_PASS = process.env.GLOBAL_PASS;
   try {
+    console.log(API_URL);
     const response = await fetch(`${API_URL}/token`, {
       method: 'POST',
       headers: {

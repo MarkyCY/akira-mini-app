@@ -16,7 +16,7 @@ export async function SubscribeUser(token: string, contest_id: string) {
     });
     
     if (!response.ok) {
-        return { success: false, message: 'Error al obtener los datos' };
+        return { status: response.status, success: false, message: 'Error al obtener los datos' };
     }
 
     const data = await response.json();
@@ -38,7 +38,7 @@ export async function UnsubscribeUser(token: string, contest_id: string) {
     });
     
     if (!response.ok) {
-        return { success: false, message: 'Error al obtener los datos' };
+        return { status: response.status, success: false, message: 'Error al obtener los datos' };
     }
 
     const data = await response.json();

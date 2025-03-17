@@ -6,49 +6,30 @@ import { Entry } from "@/lib/getNews";
 import { MarqueeDemoVertical } from "../Home/News/MarqueeVertical";
 import Cookies from 'js-cookie';
 import OtakuLoadIcon from "../icons/otakuLoad";
+import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
 
 export default function NewsContent() {
     const [news, setNews] = useState<Entry[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { theme } = useTheme()
 
-    const fetchNews = async () => {
-        const token = Cookies.get('token') || null;
-        if (token) {
-            try {
-                const response = await getServerSideNews(token);
-
-                const expirationMinutes = 10;
-                const expirationDays = expirationMinutes / (24 * 60)
-
-                const adjustedEntries = response.map((entry: Entry) => ({
-                    ...entry
-                }));
-
-                setNews(adjustedEntries);
-                Cookies.set('NewsList', JSON.stringify(adjustedEntries), { expires: expirationDays })
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-                setError("Error al obtener los datos");
-                setLoading(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
+    const { data: session, status } = useSession();
+    const token = session?.user?.accessToken;
 
     useEffect(() => {
         const newsData = Cookies.get('NewsList') || null;
-
-        if (newsData) {
-            setNews(JSON.parse(newsData));
-            setLoading(false);
-        } else {
-            Cookies.remove('NewsList');
-            fetchNews();
+        if (token) {
+            if (newsData) {
+                setNews(JSON.parse(newsData));
+                setLoading(false);
+            } else {
+                Cookies.remove('NewsList');
+                fetchNews(token, setNews, setLoading, setError);
+            }
         }
-
-    }, []);
+    }, [token]);
     return (
         <>
             <div className="w-full h-auto max-w-sm pt-3" id="header">
@@ -57,10 +38,36 @@ export default function NewsContent() {
                 </BlurFade>
             </div>
             {loading ? (
-                <OtakuLoadIcon className="text-neutral-200/10 w-full size-40 p-5" />
+                <OtakuLoadIcon color={theme === "dark" ? "#ea527d" : "#b50638"} className="w-full size-40 p-5" />
             ) : error ? (
                 <div className="w-full text-center text-lg font-bold">{error}</div>
             ) : news && (<MarqueeDemoVertical entries={news} />)}
         </>
     )
 }
+
+const fetchNews = async (token: string, setNews: (news: Entry[] | null) => void, setLoading: (loading: boolean) => void, setError: (error: string | null) => void) => {
+    try {
+        const response = await getServerSideNews(token);
+
+        const expirationMinutes = 10;
+        const expirationDays = expirationMinutes / (24 * 60)
+
+        const adjustedEntries = response.map((entry: Entry) => ({
+            ...entry
+        }));
+
+        setNews(adjustedEntries);
+        Cookies.set('NewsList', JSON.stringify(adjustedEntries), { expires: expirationDays })
+    } catch (error: any) {
+        console.error('Error al obtener los datos:', error);
+        if (error.message === '401') {
+            console.log("efe")
+            signOut({ callbackUrl: '/' });
+        }
+        setError("Error al obtener los datos");
+        setLoading(false);
+    } finally {
+        setLoading(false);
+    }
+};

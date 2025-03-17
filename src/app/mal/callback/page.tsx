@@ -51,7 +51,7 @@ export default function CallbackPage() {
     };
 
     fetchTokens();
-  }, [searchParams]);
+  }, [REDIRECT_URI, searchParams]);
 
   if (error) {
     router.push('/');

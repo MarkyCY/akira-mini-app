@@ -14,24 +14,15 @@ export default function MAL_Stats() {
     const expirationMinutes = 3;
     const expirationDays = expirationMinutes / (24 * 60)
 
-
-    const fetchData = async () => {
-        if (mal_token) {
-            const res = await getMALStats(mal_token);
-            setStats(res);
-            Cookies.set('mal_data', JSON.stringify(res), { expires: expirationDays });
-        }
-    };
-
     useEffect(() => {
         const savedStats = Cookies.get('mal_data') || null;
 
         if (savedStats) {
             setStats(JSON.parse(savedStats));
         } else {
-            fetchData();
+            fetchData(mal_token, setStats, expirationDays);
         }
-    }, []);
+    }, [mal_token, setStats, expirationDays]);
 
     return (
         <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
@@ -113,3 +104,11 @@ export default function MAL_Stats() {
         </BlurFade>
     )
 }
+
+const fetchData = async (mal_token: string, setStats: (stats: MalUser | null) => void, expirationDays: number) => {
+    if (mal_token) {
+        const res = await getMALStats(mal_token);
+        setStats(res);
+        Cookies.set('mal_data', JSON.stringify(res), { expires: expirationDays });
+    }
+};

@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import Cookies from 'js-cookie';
 import { SubscribeUser, UnsubscribeUser } from "@/components/Contest/suscriptionContest";
 import WebApp from '@twa-dev/sdk';
+import { useSession, signOut } from "next-auth/react";
 
 interface AnimatedSubscribeButtonProps {
   buttonColor: string;
@@ -28,6 +29,9 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
   const [isSubscribed, setIsSubscribed] = useState<boolean>(subscribeStatus);
   const [isLoading, setIsLoading] = useState<boolean>(false); // Nuevo estado para carga
 
+  const { data: session, status } = useSession();
+  const token = session?.user?.accessToken || "";
+
   useEffect(() => {
     setIsSubscribed(subscribeStatus);
   }, [subscribeStatus]);
@@ -41,7 +45,6 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
   );
 
   const handleClick = async () => {
-    const token = Cookies.get('token') || '';
 
     setIsLoading(true); // Iniciar loading
 
@@ -51,22 +54,23 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
         if (res.success) {
           setIsSubscribed(false);
           suscribeChange();
-           
+        } else if (res.status === 401) {
+          signOut({ callbackUrl: '/' });
         } else if (typeof window !== 'undefined') {
-          WebApp.showAlert("Error en la desuscripción");
+          WebApp.showAlert("Error en la suscripción");
         }
       } else {
         const res = await SubscribeUser(token, contest_id);
         if (res.success) {
           setIsSubscribed(true);
           suscribeChange();
-          
+
           const end = Date.now() + 3 * 1000; // 3 seconds
           const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
-        
+
           const frame = () => {
             if (Date.now() > end) return;
-        
+
             confetti({
               particleCount: 2,
               angle: 60,
@@ -83,10 +87,12 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
               origin: { x: 1, y: 0.5 },
               colors: colors,
             });
-        
+
             requestAnimationFrame(frame);
           };
           frame();
+        } else if (res.status === 401) {
+          signOut({ callbackUrl: '/' });
         } else if (typeof window !== 'undefined') {
           WebApp.showAlert("Error en la suscripción");
         }
@@ -100,10 +106,10 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
 
   return (
     <AnimatePresence mode="wait">
-      {isLoading ? ( 
+      {isLoading ? (
         <motion.button
           key="loading"
-          className={buttonClasses + " opacity-50 cursor-not-allowed"} 
+          className={buttonClasses + " opacity-50 cursor-not-allowed"}
           disabled
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

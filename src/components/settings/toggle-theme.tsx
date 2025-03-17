@@ -1,6 +1,7 @@
 import { Check, Minus } from "lucide-react";
 import { useId } from "react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 
 const items = [
   { value: "light", label: "Claro", image: "/ui-light.png" },
@@ -32,7 +33,7 @@ export default function ToggleTheme() {
               onChange={() => setTheme(item.value)}
               checked={theme === item.value}
             />
-            <img
+            <Image
               src={item.image}
               alt={item.label}
               width={88}
@@ -40,6 +41,7 @@ export default function ToggleTheme() {
               className={`rounded-lg border-2 transition-all ${
                 theme === item.value ? "border-blue-500" : "border-transparent"
               }`} // Borde azul para la opción seleccionada
+              unoptimized
             />
             <span className="group mt-2 flex items-center gap-1">
               {theme === item.value ? ( // Muestra el ícono correcto según el estado

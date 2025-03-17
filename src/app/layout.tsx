@@ -6,9 +6,13 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthenticatedComponent from "@/contexts/AuthenticatedComponent";
 
+import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react"
+import { redirect } from "next/navigation";
+
 const TelegramInitializer = dynamic(
   () => import("@/components/tg/Initializer"),
-  { ssr: false }
+  // { ssr: false }
 );
 
 export const metadata: Metadata = {
@@ -16,11 +20,16 @@ export const metadata: Metadata = {
   description: "La app de los Otakus de Cuba",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const session = await auth();
+  if (!session) {
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-black h-screen">
@@ -30,13 +39,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
+          {/* <AuthProvider> */}
+          <SessionProvider>
             <TelegramInitializer />
             <div className="pt-4 px-4 pb-20" id="app">
-              <AuthenticatedComponent>{children}</AuthenticatedComponent>
+              {/* <AuthenticatedComponent>{children}</AuthenticatedComponent> */}
+              {children}
             </div>
             <NavBarButtons />
-          </AuthProvider>
+          </SessionProvider>
+          {/* </AuthProvider> */}
         </ThemeProvider>
       </body>
     </html>

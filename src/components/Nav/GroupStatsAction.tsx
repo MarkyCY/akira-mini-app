@@ -12,7 +12,7 @@ export async function getGroupStats(token: string) {
     });
     
     if (!response.ok) {
-        throw new Error('Error al obtener los datos');
+        throw new Error(response.status.toString());
     }
 
     const data = await response.json();

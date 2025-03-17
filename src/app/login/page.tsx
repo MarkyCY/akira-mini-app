@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import WebApp from '@twa-dev/sdk';
 import { MultiStepLoader as Loader } from "@/components/ui/multi-step-loading";
@@ -11,7 +11,6 @@ const LoginPage: React.FC = () => {
     const [step, setStep] = useState(0);
     const [mesg, setMsg] = useState('Intentando iniciar sesión...');
     const [error, setError] = useState(false);
-    const { login } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -30,29 +29,34 @@ const LoginPage: React.FC = () => {
 
             // setClientid(873919300);
 
-            setStep(2);
+            const handleComplete = async (clientid: number) => {
+              setStep(2);
+              try {
+                const result = await signIn("credentials", {
+                  userid: clientid,
+                  redirect: false, // Evita la redirección automática
+                });
+            
+                if (result?.error && result?.status != 200) {
+                  setError(true);
+                  setMsg("¡Inicio de sesión fallido!");
+                } else {
+                  setMsg("¡Inicio de sesión exitoso!");
+                  setStep(3); // 3️⃣ Autenticación exitosa, redirigiendo...
+                  router.push("/");
+                }
+              } catch (error) {
+                setError(true);
+                setMsg("Ocurrió un error durante la autenticación.");
+              }
+            }
+
             if (clientid) {
                 handleComplete(clientid)
             }
         };
-    }, [clientid]);
-
-    const handleComplete = async (clientid: number) => {
-    try {
-        const result = await login(clientid);
-        setMsg(result.message);
-        setStep(3); // 3️⃣ Intentando autenticar en la API
+    }, [clientid, router]);
     
-        if (result.success) {
-          setStep(4); // 4️⃣ Autenticación exitosa, redirigiendo
-          setTimeout(() => router.push("/"), 500); // Pequeña pausa antes de redirigir
-        }
-    } catch (error: any) {
-      setError(true);
-      setMsg(error.message);
-      return
-    }
-  };
 
   const loadingStates = [
     { text: "Conectando con Telegram..." },
@@ -79,3 +83,22 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
+
+
+
+// "use client";
+
+// import { signIn } from "next-auth/react";
+
+// export default function Login() {
+
+//   return (
+//     <div>
+//       <button onClick={async () => await signIn("credentials", {
+//       userid: 873919300,
+//       redirectTo: "/",
+//     })}>Iniciar sesión como Calvo</button>
+//     </div>
+//   );
+// }
+

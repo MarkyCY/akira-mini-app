@@ -30,7 +30,7 @@ export default function UserView({ user, premium }: {
                         <Image
                             className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
                             src={urls}
-                            alt={user.first_name}
+                            alt={user.user_id.toString()}
                             width={640}
                             height={640}
                             unoptimized={true}
