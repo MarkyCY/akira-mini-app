@@ -21,12 +21,17 @@ export default function UserView({ user, premium }: {
         setUrls("/unknow.webp");
     };
 
+    function normalizeText(input: string) {
+        return input.normalize('NFKC').replace(/[\u200B-\u200D\uFEFF]/g, '');
+    }
+
+
     return (
         (typeof window !== 'undefined' ? (
             <button onClick={() => WebApp.showAlert("🚧 En desarrollo")} className='flex items-center gap-3'>
                 <div className='relative'>
                     <div className="relative">
-                    {premium && (<BorderBeam className='rounded-full' />)}
+                        {premium && (<BorderBeam className='rounded-full' />)}
                         <Image
                             className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
                             src={urls}
@@ -39,11 +44,11 @@ export default function UserView({ user, premium }: {
                         />
                     </div>
                 </div>
-                <div className="dark:text-white">
+                <div className="dark:text-white" style={{direction: "ltr", textAlign: "left"}}>
                     {premium ? (
-                        <SparklesText className="text-sm font-medium text-left" sparklesCount={2} text={user.first_name} colors={{ first: "#FFD700", second: "#DAA520" }} />
+                        <SparklesText className="text-sm font-medium text-left" sparklesCount={2} text={normalizeText(user.first_name)} colors={{ first: "#FFD700", second: "#DAA520" }} />
                     ) : (
-                        <div className='font-medium text-left'>{user.first_name}</div>
+                        <div className='font-medium text-left'>{normalizeText(user.first_name)}</div>
                     )}
                     <div className="text-xs text-gray-400 dark:text-neutral-500">
                         {user.messages} mensajes, {user.avg_chars} caracteres por mensaje
