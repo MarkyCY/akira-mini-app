@@ -20,6 +20,13 @@ const LoginPage: React.FC = () => {
             const params = new URLSearchParams(WebApp.initData);
             const userData = decodeURIComponent(params.get('user') || '');
             const user = JSON.parse(userData);
+            const version = parseInt(WebApp.version)
+
+            if (version < 8) {
+                setError(true);
+                setMsg('Versión de Telegram obsoleta, actualiza Telegram');
+                return;
+            }
 
             if (!user.username) {
                 setMsg('No tienes nombre de usuario');
