@@ -21,9 +21,26 @@ export default function UserView({ user, premium }: {
         setUrls("/unknow.webp");
     };
 
-    function normalizeText(input: string) {
-        return input.normalize('NFKC').replace(/[\u200B-\u200D\uFEFF]/g, '');
-    }
+    function normalizeText(text: string) {
+        return Array.from(text)
+          .filter((char) => {
+            const code = char.codePointAt(0) ?? 0;
+      
+            // Elimina:
+            // - Caracteres de control (U+0000 a U+001F y U+007F)
+            // - Caracteres Hangul Jamo (U+1100 a U+11FF)
+            // - Caracteres invisibles comunes como U+200B (Zero Width Space), etc.
+            return !(
+              (code >= 0x0000 && code <= 0x001F) ||  // control
+              code === 0x007F ||                    // DEL
+              (code >= 0x1100 && code <= 0x11FF) || // Hangul Jamo
+              (code >= 0x200B && code <= 0x200F) || // Zero-width characters
+              (code >= 0x202A && code <= 0x202E) || // bidi control
+              (code >= 0x2060 && code <= 0x206F)    // invisible formatting chars
+            );
+          })
+          .join('');
+      }
 
 
     return (
