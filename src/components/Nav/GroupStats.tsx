@@ -9,6 +9,7 @@ import { getGroupStats } from "./GroupStatsAction";
 import { StatsDaily } from "@/lib/StatsDaily";
 import TopAdminWork from "../stats/topAdmin";
 import Cookies from 'js-cookie';
+import WebApp from "@twa-dev/sdk";
 
 import { useSession, signOut } from 'next-auth/react';
 
@@ -29,6 +30,7 @@ export default function Group() {
     const { data: session, status } = useSession();
 
     const token = session?.user?.accessToken || null;
+    const first_name = WebApp.initDataUnsafe.user?.first_name || "";
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,7 +44,7 @@ export default function Group() {
             } catch (error: any) {
                 console.error('Error al obtener los datos:', error);
                 if (error.message === '401') {
-                    signOut({ callbackUrl: '/' });
+                    signOut();
                 }
             }
         }
@@ -61,7 +63,10 @@ export default function Group() {
         <>
             <div className="w-full h-auto max-w-sm pt-3" id="header">
                 <BlurFade delay={0} inView>
-                    <SparklesText className="text-4xl pb-2 font-semibold tracking-tighter dark:text-neutral-200" text="Hola amigo! 👋" />
+                    <SparklesText className="text-4xl pb-2 font-semibold tracking-tighter dark:text-neutral-200" text={`Hola, ${first_name && /^[a-zA-Z0-9_'\-.,!? ]+$/.test(first_name)
+                            ? first_name.slice(0, 15)
+                            : 'amigo'
+                        }! 👋`} />
                 </BlurFade>
                 <BlurFade delay={0.25 * 2} inView>
                     <span className="text-2xl text-pretty tracking-tighter dark:text-neutral-300">
