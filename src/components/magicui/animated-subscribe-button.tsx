@@ -55,7 +55,7 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
           setIsSubscribed(false);
           suscribeChange();
         } else if (res.status === 401) {
-          signOut({ callbackUrl: '/' });
+          signOut();
         } else if (typeof window !== 'undefined') {
           WebApp.showAlert("Error en la suscripción");
         }
@@ -92,7 +92,7 @@ export const AnimatedSubscribeButton: React.FC<AnimatedSubscribeButtonProps> = (
           };
           frame();
         } else if (res.status === 401) {
-          signOut({ callbackUrl: '/' });
+          signOut();
         } else if (typeof window !== 'undefined') {
           WebApp.showAlert("Error en la suscripción");
         }

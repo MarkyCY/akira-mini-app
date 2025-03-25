@@ -62,8 +62,7 @@ const fetchNews = async (token: string, setNews: (news: Entry[] | null) => void,
     } catch (error: any) {
         console.error('Error al obtener los datos:', error);
         if (error.message === '401') {
-            console.log("efe")
-            signOut({ callbackUrl: '/' });
+            signOut();
         }
         setError("Error al obtener los datos");
         setLoading(false);

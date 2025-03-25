@@ -24,7 +24,7 @@ export default function ContestList() {
                 } catch (error: any) {
                     console.error('Error al obtener los datos:', error);
                     if (error.message === '401') {
-                        signOut({ callbackUrl: '/' });
+                        signOut();
                     }
                 } finally {
                     setLoading(false);
