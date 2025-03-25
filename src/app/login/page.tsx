@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
                 } else {
                   setMsg("¡Inicio de sesión exitoso!");
                   setStep(3); // 3️⃣ Autenticación exitosa, redirigiendo...
-                  router.push("/");
+                  window.location.replace("/");
                 }
               } catch (error) {
                 setError(true);
