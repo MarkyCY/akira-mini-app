@@ -68,7 +68,7 @@ export default function Group() {
                             : 'amigo'
                         }! 👋`} />
                 </BlurFade>
-                <BlurFade delay={0.25} inView>
+                <BlurFade delay={0} inView>
                     <span className="text-2xl text-pretty tracking-tighter dark:text-neutral-300">
                         Bienvenido a la Mini App de Otaku Senpai
                     </span>
