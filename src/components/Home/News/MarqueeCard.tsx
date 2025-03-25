@@ -1,7 +1,7 @@
 'use client';
 import { cn } from "@/lib/utils";
 import { Entry } from "@/lib/getNews";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import WebApp from "@twa-dev/sdk";
 import { ShareMedia } from "@/components/tg/shareMedia";
@@ -111,11 +111,27 @@ export default function ReviewCard({
     //     });
     // }, [ogImage]);
 
+    const ref = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (ref.current && !ref.current.contains(event.target as Node) && showing) {
+                setShowing(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showing]);
+    
     return (
         typeof window !== "undefined" && (
             <div
                 onClick={() => setShowing(!showing)}
                 rel="noopener noreferrer"
+                ref={ref}
                 className="rounded-xl shadow-md"
             >
                 <figure
