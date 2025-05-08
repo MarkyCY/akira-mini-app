@@ -30,7 +30,7 @@ export default function AdminView({ user }: AdminViewProps) {
                     onError={() => handleError()}
                 />
                 <div className="dark:text-white">
-                    <div className='font-medium text-left'>{user.first_name}</div>
+                    <div className='font-medium text-left'>{user.first_name || "No Name"}</div>
                     <div className="text-xs text-gray-400 dark:text-neutral-500">
                         {user.deleted} borrados, {user.banned} baneados, {user.kicked} expulsados
                     </div>
@@ -48,7 +48,7 @@ export default function AdminView({ user }: AdminViewProps) {
                     priority
                 />
                 <div className="dark:text-white">
-                    <div className='font-medium'>{user.first_name}</div>
+                    <div className='font-medium'>{user.first_name || "No Name"}</div>
                     <div className="text-xs text-gray-400 dark:text-neutral-500">
                         {user.deleted} borrados, {user.banned} baneados, {user.kicked} expulsados
                     </div>
