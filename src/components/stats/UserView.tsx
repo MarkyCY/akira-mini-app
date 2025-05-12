@@ -55,7 +55,7 @@ export default function UserView({ user, premium }: {
                             alt={user.user_id.toString()}
                             width={640}
                             height={640}
-                            unoptimized={true}
+                            
                             priority
                             onError={() => handleError()}
                         />

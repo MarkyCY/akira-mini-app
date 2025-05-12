@@ -25,7 +25,7 @@ export default function AdminView({ user }: AdminViewProps) {
                     alt={user.user_id.toString()}
                     width={640}
                     height={640}
-                    unoptimized={true}
+                    
                     priority
                     onError={() => handleError()}
                 />
@@ -44,7 +44,7 @@ export default function AdminView({ user }: AdminViewProps) {
                     alt={user.user_id.toString()}
                     width={640}
                     height={640}
-                    unoptimized={true}
+                    
                     priority
                 />
                 <div className="dark:text-white">

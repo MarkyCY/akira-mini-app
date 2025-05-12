@@ -114,7 +114,7 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
                         width="640"
                         height="640"
                         onError={() => setImgSrc("/mistic_green_forest.webp")}
-                        unoptimized
+                        
                     />
                 </figure>
                 <div className={`absolute bottom-0 ${expanded ? 'top-80' : ''}`}>

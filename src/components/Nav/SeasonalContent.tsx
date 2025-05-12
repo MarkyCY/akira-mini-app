@@ -111,7 +111,7 @@ export default function ShopContent() {
                             className="relative shadow-black/5 shadow-none transition-transform-opacity motion-reduce:transition-none !duration-300 rounded-large z-0 w-full h-full object-cover"
                             width={200}
                             height={300}
-                            unoptimized
+                            
                         />
 
                         {/* Overlay para contenido adulto */}

@@ -12,7 +12,7 @@ export default function MiniCard() {
             className="w-full h-full object-cover rounded-[12px]"
             width={640}
             height={640}
-            unoptimized
+            
           />
         </div>
       </div>

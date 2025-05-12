@@ -235,7 +235,7 @@ export default function ReviewCard({
                             height={640}
                             alt="OG Image"
                             className="absolute inset-0 w-full h-full object-cover z-0"
-                            unoptimized
+                            
                         />
                     )}
 

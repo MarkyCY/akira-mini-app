@@ -93,7 +93,7 @@ export default function HeroVideoDialog({
           width={640}
           height={640}
           className="object-cover rounded-t-[12px]"
-          unoptimized
+          
           onLoadingComplete={() => setIsImageLoaded(true)}
           priority
         />
