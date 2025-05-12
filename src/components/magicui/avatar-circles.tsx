@@ -40,7 +40,7 @@ const AvatarCircles = ({
           width={40}
           height={40}
           alt={`Avatar ${index + 1}`}
-          unoptimized
+          
           onError={() => handleError(index)} // Maneja el error para cada avatar individualmente
         />
       ))}
