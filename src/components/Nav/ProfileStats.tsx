@@ -6,6 +6,7 @@ import SparklesText from "../magicui/sparkles-text";
 import LoginAnimeList from "../MyAnimeList/MAL_Auth";
 import Cookies from 'js-cookie';
 import MAL_Stats from "../MyAnimeList/MAL_Stats";
+import DragAndDropPerfil from "../Home/Profile/DragAndDrop/DragAndDrop";
 
 export default function ProfileStats() {
     const malToken = Cookies.get('mal_token') || '';
@@ -18,6 +19,7 @@ export default function ProfileStats() {
                     <SparklesText sparklesCount={5} className="text-xl font-normal tracking-tighter dark:text-neutral-200" text="Perfil de usuario" />
                 </BlurFade>
             </div>
+            <DragAndDropPerfil />
             <Suspense fallback={<ShowDataSkeleton />}>
                 <ShowData />
             </Suspense>
