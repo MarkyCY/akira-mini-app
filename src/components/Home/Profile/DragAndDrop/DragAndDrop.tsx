@@ -38,6 +38,17 @@ export default function DragAndDropPerfil() {
   const [bgImage, setBgImage] = useState("https://i.ibb.co/Qjcqy6wL/profile-background.jpg");
   const [IconsPacks, setIconsPacks] = useState<Packs>()
   const [canvaRequestJSON, setCanvaRequestJSON] = useState<string>("{}");
+  const [showBackgroundMenu, setShowBackgroundMenu] = useState(false);
+  const [showIconsMenu, setShowIconsMenu] = useState(false);
+  const [MAX_ITEMS, setMAX_ITEMS] = useState(5);
+
+  // Variables para detección de doble toque en móviles
+  const touchTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const lastTouchTime = useRef<{ [key: string]: number }>({});
+
+  // Referencias para los menús
+  const backgroundMenuRef = useRef<HTMLDivElement>(null);
+  const iconsMenuRef = useRef<HTMLDivElement>(null);
 
   const perfilRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +67,29 @@ export default function DragAndDropPerfil() {
     setBgImage(response.bgImage);
     Cookies.set("perfilItems", JSON.stringify(response.items));
   }
+
+  // Efecto para manejar clics fuera de los menús
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Cerrar menú de fondos si está abierto y se hace clic fuera
+      if (backgroundMenuRef.current && !backgroundMenuRef.current.contains(event.target as Node) && showBackgroundMenu) {
+        setShowBackgroundMenu(false);
+      }
+
+      // Cerrar menú de iconos si está abierto y se hace clic fuera
+      if (iconsMenuRef.current && !iconsMenuRef.current.contains(event.target as Node) && showIconsMenu) {
+        setShowIconsMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside as any);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside as any);
+    };
+  }, [showBackgroundMenu, showIconsMenu]);
 
   useEffect(() => {
     const stored = Cookies.get("perfilItems");
@@ -213,12 +247,47 @@ export default function DragAndDropPerfil() {
     setPerfilItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // Función para manejar el doble toque en dispositivos móviles
+  const handleTouchStart = (id: string, isFixed: boolean | undefined) => {
+    if (isFixed) return;
+
+    const now = new Date().getTime();
+    const lastTime = lastTouchTime.current[id] || 0;
+
+    // Si hay un toque previo y el intervalo es menor a 300ms, considerarlo como doble toque
+    if (now - lastTime < 300) {
+      eliminarItem(id);
+      // Limpiar el timeout y el registro de tiempo
+      if (touchTimeouts.current[id]) {
+        clearTimeout(touchTimeouts.current[id]);
+        delete touchTimeouts.current[id];
+      }
+      delete lastTouchTime.current[id];
+    } else {
+      // Registrar el tiempo del primer toque
+      lastTouchTime.current[id] = now;
+
+      // Limpiar el timeout anterior si existe
+      if (touchTimeouts.current[id]) {
+        clearTimeout(touchTimeouts.current[id]);
+      }
+
+      // Establecer un timeout para limpiar el registro después de 300ms
+      touchTimeouts.current[id] = setTimeout(() => {
+        delete lastTouchTime.current[id];
+      }, 300);
+    }
+  };
+
   // const saveToCookie = () => {
   //   Cookies.set("perfilItems", JSON.stringify(perfilItems));
   // };
 
   return (
-    <div className="flex flex-col gap-2 p-4 w-full h-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+    <div className="flex flex-col gap-2 p-2 w-full h-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+      <h5 className="text-base font-semibold text-gray-900 md:text-xl dark:text-white">
+        Tarjeta Personalizable
+      </h5>
       {/* <div className="flex flex-col md:flex-row gap-4">
         <div className="flex gap-2 items-center">
           <label className="text-sm font-medium">Color de fondo:</label>
@@ -240,54 +309,7 @@ export default function DragAndDropPerfil() {
         </div>
       </div> */}
 
-      <div className="flex flex-col gap-2">
-        {IconsPacks && Object.entries(IconsPacks.packs).map(([pack, icons]) => {
-          return (
-            <div key={pack} className="relative">
-              {/* <h1 className="text-white font-bold pb-1">{pack}</h1> */}
-              <div className="flex flex-wrap gap-2">
-                {icons.slice(0, 6).map((icon) => {
-                  const count = countBySrc(`${API_URL}/icons/pack/${pack}/${icon}`);
-                  const isMaxed = count >= 1;
-
-                  return (
-                    <Image
-                      key={icon}
-                      src={`${API_URL}/icons/pack/${pack}/${icon}`}
-                      alt={icon}
-                      width={40}
-                      height={40}
-                      onClick={() => {
-                        if (isMaxed) return;
-
-                        const rect = perfilRef.current?.getBoundingClientRect();
-                        const id = Date.now().toString();
-                        const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
-                        const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
-
-                        setPerfilItems((prev) => [
-                          ...prev,
-                          {
-                            id,
-                            src: `${API_URL}/icons/pack/${pack}/${icon}`,
-                            x,
-                            y,
-                            width: DEFAULT_SIZE,
-                            height: DEFAULT_SIZE,
-                            rotation: 0,
-                          },
-                        ]);
-                      }}
-                      className={`cursor-pointer ${isMaxed ? "opacity-30 pointer-events-none" : ""
-                        }`}
-
-                    />)
-                })}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      {/* Los iconos ahora se muestran en el menú desplegable */}
 
       <div className="flex flex-col items-start gap-4">
         <div
@@ -356,6 +378,7 @@ export default function DragAndDropPerfil() {
               onDoubleClick={() => {
                 if (!item.isFixed) eliminarItem(item.id);
               }}
+              onTouchStart={() => handleTouchStart(item.id, item.isFixed)}
               style={{
                 transform: `rotate(${item.rotation}deg)`,
                 zIndex: item.isFixed ? 2 : 3,
@@ -394,7 +417,108 @@ export default function DragAndDropPerfil() {
           Limpiar todo
         </button> */}
       </div>
+      <div className="relative flex gap-2">
+        <button
+          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
+          onClick={() => setShowBackgroundMenu(!showBackgroundMenu)}
+        >
+          Cambiar Fondo
+        </button>
+        <button
+          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
+          onClick={() => setShowIconsMenu(!showIconsMenu)}
+        >
+          Mostrar Iconos
+        </button>
 
+        {/* Menú de fondos */}
+        {showBackgroundMenu && IconsPacks && (
+          <div
+            ref={backgroundMenuRef}
+            className="absolute z-10 p-3 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-x-auto"
+          >
+            <div className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2">
+              {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
+                if (pack !== "background") return null;
+                return icons.map((icon) => (
+                  <div
+                    key={icon}
+                    className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => {
+                      setBgImage(`${API_URL}/icons/pack/${pack}/${icon}`);
+                      setShowBackgroundMenu(false);
+                    }}
+                  >
+                    <Image
+                      src={`${API_URL}/icons/pack/${pack}/${icon}`}
+                      alt={icon}
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                ));
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Menú de iconos */}
+        {showIconsMenu && IconsPacks && (
+          <div
+            ref={iconsMenuRef}
+            className="absolute z-10 p-3 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto"
+          >
+            <div className="flex flex-col gap-3">
+              {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
+                if (pack === "background") return null;
+                return (
+                  <div key={pack} className="flex flex-col gap-2">
+                    <h3 className="text-white text-sm font-medium">{pack}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {icons.map((icon) => {
+                        const count = countBySrc(`${API_URL}/icons/pack/${pack}/${icon}`);
+                        const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
+
+                        return (
+                          <Image
+                            key={icon}
+                            src={`${API_URL}/icons/pack/${pack}/${icon}`}
+                            alt={icon}
+                            width={30}
+                            height={30}
+                            onClick={() => {
+                              if (isMaxed) return;
+
+                              const rect = perfilRef.current?.getBoundingClientRect();
+                              const id = Date.now().toString();
+                              const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
+                              const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
+
+                              setPerfilItems((prev) => [
+                                ...prev,
+                                {
+                                  id,
+                                  src: `${API_URL}/icons/pack/${pack}/${icon}`,
+                                  x,
+                                  y,
+                                  width: DEFAULT_SIZE,
+                                  height: DEFAULT_SIZE,
+                                  rotation: 0,
+                                },
+                              ]);
+                            }}
+                            className={`cursor-pointer ${isMaxed ? "opacity-30 pointer-events-none" : ""}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
       {/* <div className="mt-4 w-full max-w-4xl">
         <h2 className="text-lg font-semibold mb-2">Datos del Perfil (JSON)</h2>
         <pre className="bg-gray-100 p-4 rounded overflow-auto text-sm max-h-[300px] w-80">
