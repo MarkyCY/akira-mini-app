@@ -162,7 +162,7 @@ export default function DragAndDropPerfil() {
         clearTimeout(debounceTimeout.current);
       }
     };
-  }, [perfilItems, bgColor, bgImage]);
+  }, [perfilItems, bgColor, bgImage, token]);
 
   // const handleExport = async (type: 'png' | 'gif' = 'png') => {
   //   if (!perfilRef.current) return;

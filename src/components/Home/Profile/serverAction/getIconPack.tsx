@@ -9,11 +9,11 @@ export interface Packs {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getIconsPacks(token: string) {
+    console.log(token);
     const response = await fetch(`${API_URL}/icons/packs_with_icons`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
         },
     });
     
