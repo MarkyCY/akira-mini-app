@@ -751,11 +751,11 @@ export default function DragAndDropPerfil() {
                               // Ya no cerramos el menú automáticamente para permitir seleccionar más iconos
                               
                               // Mostrar tutorial de arrastrar si es el primer icono y no se ha visto el tutorial
-                              if (newItems.length === 1 && !isTutorialViewed('dragIcnDriver')) {
+                              if (!isTutorialViewed('dragIcnDriver')) {
                                 setTimeout(() => {
                                   const driverDrag = createDragIcn();
                                   driverDrag.drive();
-                                }, 500);
+                                }, 100);
                               }
 
                             }}
