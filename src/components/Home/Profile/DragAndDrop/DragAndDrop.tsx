@@ -3,6 +3,10 @@ import html2canvas from "html2canvas";
 import { Rnd } from "react-rnd";
 import Image from "next/image";
 import Cookies from "js-cookie";
+
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 // @ts-ignore
 // import gifshot from 'gifshot';
 import { getIconsPacks, Packs } from "../serverAction/getIconPack";
@@ -28,6 +32,199 @@ const MIN_SIZE = 40;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function DragAndDropPerfil() {
+
+  // Definición de tutoriales disponibles
+  const tutorialsConfig = {
+    mainDriver: {
+      id: 'mainDriver',
+      createDriver: () => {
+        return driver({
+          showProgress: true,
+          steps: [
+            {
+              popover: {
+                title: 'Tarjetas de Perfil',
+                description: 'A continuación, vamos a crear tu tarjeta de perfil personalizable. Puedes cambiar el fondo y agregar tus iconos favoritos en ella para lucir a tus amigos.',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+              }
+            },
+            {
+              element: '#draw-card', popover: {
+                title: 'Tarjeta',
+                description: 'Esta es tu tarjeta de perfil, con la que podrás interactuar para personalizarla a tu gusto.',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+              }
+            },
+            {
+              element: '#change-background', popover: {
+                title: 'Botón de Cambio de Fondo',
+                description: 'Este botón te permite cambiar el fondo de la tarjeta de perfil. Puedes elegir de una lista de fondos.',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+              }
+            },
+            {
+              element: '#show-icons', popover: {
+                title: 'Botón de seleción de Iconos',
+                description: 'Este botón te permite seleccionar los iconos que quieras añadir a tu tarjeta de perfil. Puedes elegir de una lista larga de iconos y logos.',
+                prevBtnText: 'Anterior',
+                nextBtnText: 'Siguiente',
+              }
+            },
+            {
+              popover: {
+                title: 'Sigamos con la guía',
+                description: 'Abre cualquier menú para continuar con la explicación.',
+                prevBtnText: 'Anterior',
+                doneBtnText: 'Finalizar'
+              }
+            },
+          ],
+          onDestroyed: () => markTutorialAsViewed('mainDriver')
+        });
+      }
+    },
+    backgroundDriver: {
+      id: 'backgroundDriver',
+      createDriver: () => {
+        return driver({
+          showProgress: true,
+          steps: [
+            {
+              element: '#background-list', popover: {
+                title: 'Lista de fondos',
+                description: 'Mira aquí tienes todos los fondos que puedes elegir para tu tarjeta de perfil.',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+              }
+            },
+            {
+              element: '#background-list .background-img:nth-child(1)', popover: {
+                title: 'Selecciona un fondo',
+                description: 'Selecciona cualquier fondo que quieras tocando el que más te guste.',
+                prevBtnText: 'Anterior',
+                doneBtnText: 'Finalizar'
+              }
+            },
+          ],
+          onHighlightStarted: () => setIsDriverActive(true),
+          onDeselected: () => setIsDriverActive(false),
+          onDestroyed: () => {
+            setIsDriverActive(false);
+            markTutorialAsViewed('backgroundDriver');
+          },
+        });
+      }
+    },
+    iconsDriver: {
+      id: 'iconsDriver',
+      createDriver: () => {
+        return driver({
+          showProgress: true,
+          steps: [
+            {
+              element: '#icons-list-father', popover: {
+                title: 'Lista de iconos',
+                description: 'Estos son todos los iconos que puedes elegir para tu tarjeta de perfil, siempre estarán limitados aunque si eres premium será mayor el límite.',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+              }
+            },
+            {
+              element: '#icons-list .pack-name:nth-child(1) .icon-img:nth-child(1)', popover: {
+                title: 'Selecciona un icono',
+                description: 'Selecciona un icono tocandolo y te enseño como manipularlo.',
+                prevBtnText: 'Anterior',
+                doneBtnText: 'Finalizar'
+              }
+            },
+          ],
+          onHighlightStarted: () => setIsDriverActive(true),
+          onDeselected: () => setIsDriverActive(false),
+          onDestroyed: () => {
+            setIsDriverActive(false);
+            markTutorialAsViewed('iconsDriver');
+          }
+        });
+      }
+    },
+    dragIcnDriver: {
+      id: 'dragIcnDriver',
+      createDriver: () => {
+        return driver({
+          showProgress: true,
+          steps: [
+            {
+              element: '.react-draggable .icon-dragger:nth-child(1)', popover: {
+                title: 'Movimiento',
+                description: 'Puedes mover el icono sosteniendolo y arrastrandolo hacia lo posición deseada.',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+              }
+            },
+            {
+              element: '.react-draggable .icon-dragger:nth-child(1)', popover: {
+                title: 'Eliminar',
+                description: 'Para quitarlo basta con darle doble toque rápidamente.',
+                prevBtnText: 'Anterior',
+                doneBtnText: 'Finalizar'
+              }
+            },
+          ],
+          onHighlightStarted: () => setIsDriverActive(true),
+          onDeselected: () => setIsDriverActive(false),
+          onDestroyed: () => {
+            setIsDriverActive(false);
+            markTutorialAsViewed('dragIcnDriver');
+          }
+        });
+      }
+    }
+  };
+  
+  // Función para verificar si un tutorial ya ha sido visto
+  const isTutorialViewed = (tutorialId: string): boolean => {
+    if (typeof window === 'undefined') return false;
+    
+    const viewedTutorials = localStorage.getItem('viewedTutorials');
+    if (!viewedTutorials) return false;
+    
+    try {
+      const parsed = JSON.parse(viewedTutorials);
+      return parsed[tutorialId] === true;
+    } catch (e) {
+      return false;
+    }
+  };
+  
+  // Función para marcar un tutorial como visto
+  const markTutorialAsViewed = (tutorialId: string) => {
+    if (typeof window === 'undefined') return;
+    
+    const viewedTutorials = localStorage.getItem('viewedTutorials');
+    let parsed = {};
+    
+    if (viewedTutorials) {
+      try {
+        parsed = JSON.parse(viewedTutorials);
+      } catch (e) {
+        parsed = {};
+      }
+    }
+    
+    parsed = { ...parsed, [tutorialId]: true };
+    localStorage.setItem('viewedTutorials', JSON.stringify(parsed));
+  };
+  
+  // Funciones para crear drivers dinámicamente cuando sean necesarios
+  const createMainDriver = () => tutorialsConfig.mainDriver.createDriver();
+  const createBackgroundDriver = () => tutorialsConfig.backgroundDriver.createDriver();
+  const createIconsDriver = () => tutorialsConfig.iconsDriver.createDriver();
+  const createDragIcn = () => tutorialsConfig.dragIcnDriver.createDriver();
+
+
   // Obtener token
   const { data: session, status } = useSession();
   const token = session?.user?.accessToken;
@@ -41,6 +238,8 @@ export default function DragAndDropPerfil() {
   const [showBackgroundMenu, setShowBackgroundMenu] = useState(false);
   const [showIconsMenu, setShowIconsMenu] = useState(false);
   const [MAX_ITEMS, setMAX_ITEMS] = useState(5);
+  const [isDriverActive, setIsDriverActive] = useState(false);
+  const [tutorialsInitialized, setTutorialsInitialized] = useState(false);
 
   // Variables para detección de doble toque en móviles
   const touchTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
@@ -90,6 +289,21 @@ export default function DragAndDropPerfil() {
       document.removeEventListener('touchstart', handleClickOutside as any);
     };
   }, [showBackgroundMenu, showIconsMenu]);
+
+  // Efecto para inicializar y mostrar tutoriales automáticamente
+  useEffect(() => {
+    if (!tutorialsInitialized && typeof window !== 'undefined') {
+      setTutorialsInitialized(true);
+      
+      // Mostrar el tutorial principal automáticamente si no ha sido visto
+      if (!isTutorialViewed('mainDriver')) {
+        setTimeout(() => {
+          const driverObj = createMainDriver();
+          driverObj.drive();
+        }, 1000); // Pequeño retraso para asegurar que la UI esté cargada
+      }
+    }
+  }, [tutorialsInitialized]);
 
   useEffect(() => {
     const stored = Cookies.get("perfilItems");
@@ -183,7 +397,7 @@ export default function DragAndDropPerfil() {
           bgImage: bgImage || null,
           canvas_width: perfilRef.current?.offsetWidth || 318,
           canvas_height: perfilRef.current?.offsetHeight || 158,
-          scale: 3
+          scale: 2
         };
         setCanvaRequestJSON(JSON.stringify(canvaRequest, null, 2));
 
@@ -315,6 +529,7 @@ export default function DragAndDropPerfil() {
         <div
           ref={perfilRef}
           className="relative border border-gray-400 touch-none w-full"
+          id="draw-card"
           style={{
             aspectRatio: "2/1",
             backgroundImage: `url(${bgImage})`,
@@ -333,7 +548,7 @@ export default function DragAndDropPerfil() {
               size={{ width: item.width, height: item.height }}
               position={{ x: item.x, y: item.y }}
               bounds="parent"
-              lockAspectRatio
+              lockAspectRatio={false}
               minWidth={MIN_SIZE}
               minHeight={MIN_SIZE}
               maxWidth={MAX_SIZE}
@@ -360,14 +575,15 @@ export default function DragAndDropPerfil() {
                 );
               }}
               onResizeStop={(_, __, ref, ___, position) => {
-                const size = parseInt(ref.style.width);
+                const width = parseInt(ref.style.width);
+                const height = parseInt(ref.style.height);
                 setPerfilItems((prev) =>
                   prev.map((el) =>
                     el.id === item.id
                       ? {
                         ...el,
-                        width: size,
-                        height: size,
+                        width: width,
+                        height: height,
                         x: position.x,
                         y: position.y,
                       }
@@ -384,7 +600,7 @@ export default function DragAndDropPerfil() {
                 zIndex: item.isFixed ? 2 : 3,
               }}
             >
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full icon-dragger">
                 {item.src ? (
                   <Image
                     src={item.src}
@@ -419,14 +635,32 @@ export default function DragAndDropPerfil() {
       </div>
       <div className="relative flex gap-2">
         <button
+          id="change-background"
           className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
-          onClick={() => setShowBackgroundMenu(!showBackgroundMenu)}
+          onClick={() => {
+            setShowBackgroundMenu(!showBackgroundMenu)
+            setTimeout(() => {
+              if (!isTutorialViewed('backgroundDriver')) {
+                const driverBck = createBackgroundDriver();
+                driverBck.drive();
+              }
+            }, 100)
+          }}
         >
           Cambiar Fondo
         </button>
         <button
+          id="show-icons"
           className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
-          onClick={() => setShowIconsMenu(!showIconsMenu)}
+          onClick={() => {
+            setShowIconsMenu(!showIconsMenu)
+            setTimeout(() => {
+              if (!isTutorialViewed('iconsDriver')) {
+                const driverIcn = createIconsDriver();
+                driverIcn.drive();
+              }
+            }, 100)
+          }}
         >
           Mostrar Iconos
         </button>
@@ -434,20 +668,23 @@ export default function DragAndDropPerfil() {
         {/* Menú de fondos */}
         {showBackgroundMenu && IconsPacks && (
           <div
+            id="background-menu"
             ref={backgroundMenuRef}
-            className="absolute z-10 p-3 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-x-auto"
+            className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-2 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-x-auto`}
           >
-            <div className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2">
+            <div id="background-list" className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2">
               {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
                 if (pack !== "background") return null;
                 return icons.map((icon) => (
                   <div
                     key={icon}
-                    className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity"
-                    onClick={() => {
-                      setBgImage(`${API_URL}/icons/pack/${pack}/${icon}`);
-                      setShowBackgroundMenu(false);
-                    }}
+                    className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity background-img"
+                    onClick={(e) => {
+                        // Evitar que el evento se propague al documento
+                        e.stopPropagation();
+                        setBgImage(`${API_URL}/icons/pack/${pack}/${icon}`);
+                        // Ya no cerramos el menú automáticamente para permitir seleccionar más fondos
+                      }}
                   >
                     <Image
                       src={`${API_URL}/icons/pack/${pack}/${icon}`}
@@ -465,14 +702,15 @@ export default function DragAndDropPerfil() {
         {/* Menú de iconos */}
         {showIconsMenu && IconsPacks && (
           <div
+            id="icons-list-father"
             ref={iconsMenuRef}
-            className="absolute z-10 p-3 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto"
+            className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-3 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto`}
           >
-            <div className="flex flex-col gap-3">
+            <div id="icons-list" className="flex flex-col gap-3">
               {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
                 if (pack === "background") return null;
                 return (
-                  <div key={pack} className="flex flex-col gap-2">
+                  <div key={pack} className="flex flex-col gap-2 pack-name">
                     <h3 className="text-white text-sm font-medium">{pack}</h3>
                     <div className="flex flex-wrap gap-2">
                       {icons.map((icon) => {
@@ -486,7 +724,10 @@ export default function DragAndDropPerfil() {
                             alt={icon}
                             width={30}
                             height={30}
-                            onClick={() => {
+                            onClick={(e) => {
+                              // Evitar que el evento se propague al documento
+                              e.stopPropagation();
+                              
                               if (isMaxed) return;
 
                               const rect = perfilRef.current?.getBoundingClientRect();
@@ -494,20 +735,31 @@ export default function DragAndDropPerfil() {
                               const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
                               const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
 
-                              setPerfilItems((prev) => [
-                                ...prev,
-                                {
-                                  id,
-                                  src: `${API_URL}/icons/pack/${pack}/${icon}`,
-                                  x,
-                                  y,
-                                  width: DEFAULT_SIZE,
-                                  height: DEFAULT_SIZE,
-                                  rotation: 0,
-                                },
-                              ]);
+                              const newItem = {
+                                id,
+                                src: `${API_URL}/icons/pack/${pack}/${icon}`,
+                                x,
+                                y,
+                                width: DEFAULT_SIZE,
+                                height: DEFAULT_SIZE,
+                                rotation: 0,
+                              };
+                              
+                              const newItems = [...perfilItems, newItem];
+                              setPerfilItems(newItems);
+                              
+                              // Ya no cerramos el menú automáticamente para permitir seleccionar más iconos
+                              
+                              // Mostrar tutorial de arrastrar si es el primer icono y no se ha visto el tutorial
+                              if (newItems.length === 1 && !isTutorialViewed('dragIcnDriver')) {
+                                setTimeout(() => {
+                                  const driverDrag = createDragIcn();
+                                  driverDrag.drive();
+                                }, 500);
+                              }
+
                             }}
-                            className={`cursor-pointer ${isMaxed ? "opacity-30 pointer-events-none" : ""}`}
+                            className={`cursor-pointer ${isMaxed ? "opacity-30 pointer-events-none" : ""} icon-img`}
                           />
                         );
                       })}
