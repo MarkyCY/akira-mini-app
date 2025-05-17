@@ -12,6 +12,7 @@ import "driver.js/dist/driver.css";
 import { getIconsPacks, Packs } from "../serverAction/getIconPack";
 import { useSession } from "next-auth/react";
 import { getCanvaJSON, postCanvaJSON } from "../serverAction/dragAndDropActios";
+import SaveIcon from "@/components/icons/save";
 
 interface Item {
   id: string;
@@ -74,7 +75,15 @@ export default function DragAndDropPerfil() {
               }
             },
             {
-              popover: {
+              element: '.save-icon', popover: {
+                title: 'Icono de Guardado',
+                description: 'Este icono indica el estado de tu tarjeta de perfil. Si está brillando intermitentemente es porque está guardando y no es recomendado salir. Si está en verde está guardado y es seguro salir.',
+                prevBtnText: 'Anterior',
+                nextBtnText: 'Siguiente',
+              }
+            },
+            {
+              element: '#card-buttons', popover: {
                 title: 'Sigamos con la guía',
                 description: 'Abre cualquier menú para continuar con la explicación.',
                 prevBtnText: 'Anterior',
@@ -183,14 +192,14 @@ export default function DragAndDropPerfil() {
       }
     }
   };
-  
+
   // Función para verificar si un tutorial ya ha sido visto
   const isTutorialViewed = (tutorialId: string): boolean => {
     if (typeof window === 'undefined') return false;
-    
+
     const viewedTutorials = localStorage.getItem('viewedTutorials');
     if (!viewedTutorials) return false;
-    
+
     try {
       const parsed = JSON.parse(viewedTutorials);
       return parsed[tutorialId] === true;
@@ -198,14 +207,14 @@ export default function DragAndDropPerfil() {
       return false;
     }
   };
-  
+
   // Función para marcar un tutorial como visto
   const markTutorialAsViewed = (tutorialId: string) => {
     if (typeof window === 'undefined') return;
-    
+
     const viewedTutorials = localStorage.getItem('viewedTutorials');
     let parsed = {};
-    
+
     if (viewedTutorials) {
       try {
         parsed = JSON.parse(viewedTutorials);
@@ -213,11 +222,11 @@ export default function DragAndDropPerfil() {
         parsed = {};
       }
     }
-    
+
     parsed = { ...parsed, [tutorialId]: true };
     localStorage.setItem('viewedTutorials', JSON.stringify(parsed));
   };
-  
+
   // Funciones para crear drivers dinámicamente cuando sean necesarios
   const createMainDriver = () => tutorialsConfig.mainDriver.createDriver();
   const createBackgroundDriver = () => tutorialsConfig.backgroundDriver.createDriver();
@@ -294,7 +303,7 @@ export default function DragAndDropPerfil() {
   useEffect(() => {
     if (!tutorialsInitialized && typeof window !== 'undefined') {
       setTutorialsInitialized(true);
-      
+
       // Mostrar el tutorial principal automáticamente si no ha sido visto
       if (!isTutorialViewed('mainDriver')) {
         setTimeout(() => {
@@ -380,17 +389,19 @@ export default function DragAndDropPerfil() {
   }
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-
+  const [isSaving, setIsSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   useEffect(() => {
     // Limpiar el timeout anterior si existe
+    
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
-    // Solo guardar si hay elementos
     if (perfilItems.length > 0 && token) {
+      setIsSaving(true);
+      setSaved(false);
       debounceTimeout.current = setTimeout(() => {
         Cookies.set("perfilItems", JSON.stringify(perfilItems));
-        // Construir el objeto CanvaRequest
         const canvaRequest = {
           items: perfilItems,
           bgColor: bgColor || "#ffffff",
@@ -400,11 +411,12 @@ export default function DragAndDropPerfil() {
           scale: 2
         };
         setCanvaRequestJSON(JSON.stringify(canvaRequest, null, 2));
-
         fetchPostCanvaJSON(token, canvaRequest);
-      }, 3000);
+        setIsSaving(false);
+        setSaved(true);
+        // setTimeout(() => setSaved(false), 2000);
+      }, 2000);
     }
-    // Limpiar el timeout al desmontar o cambiar dependencias
     return () => {
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
@@ -498,10 +510,13 @@ export default function DragAndDropPerfil() {
   // };
 
   return (
-    <div className="flex flex-col gap-2 p-2 w-full h-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
-      <h5 className="text-base font-semibold text-gray-900 md:text-xl dark:text-white">
-        Tarjeta Personalizable
-      </h5>
+    <div className="flex flex-col gap-2 p-4 w-full h-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
+      <div className="flex justify-between">
+        <h5 className="text-base pb-3 font-semibold text-gray-900 md:text-xl dark:text-white">
+          Tarjeta Personalizable
+        </h5>
+        <SaveIcon className={`${isSaving ? "animate-pulse text-neutral-200" : saved ? "text-emerald-400/70" : "text-neutral-400"} save-icon`} />
+      </div>
       {/* <div className="flex flex-col md:flex-row gap-4">
         <div className="flex gap-2 items-center">
           <label className="text-sm font-medium">Color de fondo:</label>
@@ -633,7 +648,7 @@ export default function DragAndDropPerfil() {
           Limpiar todo
         </button> */}
       </div>
-      <div className="relative flex gap-2">
+      <div id="card-buttons" className="relative flex gap-2">
         <button
           id="change-background"
           className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
@@ -680,11 +695,11 @@ export default function DragAndDropPerfil() {
                     key={icon}
                     className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity background-img"
                     onClick={(e) => {
-                        // Evitar que el evento se propague al documento
-                        e.stopPropagation();
-                        setBgImage(`${API_URL}/icons/pack/${pack}/${icon}`);
-                        // Ya no cerramos el menú automáticamente para permitir seleccionar más fondos
-                      }}
+                      // Evitar que el evento se propague al documento
+                      e.stopPropagation();
+                      setBgImage(`${API_URL}/icons/pack/${pack}/${icon}`);
+                      // Ya no cerramos el menú automáticamente para permitir seleccionar más fondos
+                    }}
                   >
                     <Image
                       src={`${API_URL}/icons/pack/${pack}/${icon}`}
@@ -727,7 +742,7 @@ export default function DragAndDropPerfil() {
                             onClick={(e) => {
                               // Evitar que el evento se propague al documento
                               e.stopPropagation();
-                              
+
                               if (isMaxed) return;
 
                               const rect = perfilRef.current?.getBoundingClientRect();
@@ -744,12 +759,12 @@ export default function DragAndDropPerfil() {
                                 height: DEFAULT_SIZE,
                                 rotation: 0,
                               };
-                              
+
                               const newItems = [...perfilItems, newItem];
                               setPerfilItems(newItems);
-                              
+
                               // Ya no cerramos el menú automáticamente para permitir seleccionar más iconos
-                              
+
                               // Mostrar tutorial de arrastrar si es el primer icono y no se ha visto el tutorial
                               if (!isTutorialViewed('dragIcnDriver')) {
                                 setTimeout(() => {
