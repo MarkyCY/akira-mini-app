@@ -563,7 +563,7 @@ export default function DragAndDropPerfil() {
               size={{ width: item.width, height: item.height }}
               position={{ x: item.x, y: item.y }}
               bounds="parent"
-              lockAspectRatio={false}
+              lockAspectRatio
               minWidth={MIN_SIZE}
               minHeight={MIN_SIZE}
               maxWidth={MAX_SIZE}
@@ -590,15 +590,16 @@ export default function DragAndDropPerfil() {
                 );
               }}
               onResizeStop={(_, __, ref, ___, position) => {
-                const width = parseInt(ref.style.width);
-                const height = parseInt(ref.style.height);
+                // const width = parseInt(ref.style.width);
+                // const height = parseInt(ref.style.height);
+                const size = parseInt(ref.style.width);
                 setPerfilItems((prev) =>
                   prev.map((el) =>
                     el.id === item.id
                       ? {
                         ...el,
-                        width: width,
-                        height: height,
+                        width: size,
+                        height: size,
                         x: position.x,
                         y: position.y,
                       }
