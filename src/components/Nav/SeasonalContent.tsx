@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
-import SeasonButton from "../Season/seasonButtons";
+import SeasonButton from "../Home/Space/Season/seasonButtons";
 import Image from "next/image";
 import { fetchSeasonalAnime } from "@/ServerActions/getSeasonGQL";
 import OtakuLoadIcon from "../icons/otakuLoad";

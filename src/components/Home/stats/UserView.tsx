@@ -2,8 +2,8 @@ import Image from 'next/image';
 import { TopUser } from '@/lib/StatsDaily';
 import WebApp from "@twa-dev/sdk";
 import { useState } from 'react';
-import { BorderBeam } from '../magicui/border-beam';
-import SparklesText from '../magicui/sparkles-text';
+import { BorderBeam } from '../../magicui/border-beam';
+import SparklesText from '../../magicui/sparkles-text';
 interface UserViewProps {
     user: TopUser;
 }

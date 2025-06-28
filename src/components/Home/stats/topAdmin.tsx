@@ -1,4 +1,4 @@
-import BlurFade from "../magicui/blur-fade";
+import BlurFade from "../../magicui/blur-fade";
 import AdminView from "./AdminView";
 import { TopAdmin } from "@/lib/StatsDaily";
 

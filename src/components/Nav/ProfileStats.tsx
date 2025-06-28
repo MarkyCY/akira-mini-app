@@ -3,9 +3,9 @@ import ShowDataSkeleton from "../Home/Profile/ShowDataSkeleton";
 import ShowData from "../Home/Profile/ShowData";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
-import LoginAnimeList from "../MyAnimeList/MAL_Auth";
+import LoginAnimeList from "../Home/Profile/MyAnimeList/MAL_Auth";
 import Cookies from 'js-cookie';
-import MAL_Stats from "../MyAnimeList/MAL_Stats";
+import MAL_Stats from "../Home/Profile/MyAnimeList/MAL_Stats";
 import DragAndDropPerfil from "../Home/Profile/DragAndDrop/DragAndDrop";
 
 export default function ProfileStats() {
@@ -19,7 +19,9 @@ export default function ProfileStats() {
                     <SparklesText sparklesCount={5} className="text-xl font-normal tracking-tighter dark:text-neutral-200" text="Perfil de usuario" />
                 </BlurFade>
             </div>
-            <DragAndDropPerfil />
+            <BlurFade delay={0} duration={0.50} inView className="z-10">
+                <DragAndDropPerfil />
+            </BlurFade>
             <Suspense fallback={<ShowDataSkeleton />}>
                 <ShowData />
             </Suspense>

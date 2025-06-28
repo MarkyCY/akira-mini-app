@@ -1,5 +1,5 @@
 import { StatsDaily } from "@/lib/StatsDaily";
-import BlurFade from "../magicui/blur-fade";
+import BlurFade from "../../magicui/blur-fade";
 
 export default function ShowResume({ data }: { data: StatsDaily }) {
     const getColor = (value: number) => {

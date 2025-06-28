@@ -1,6 +1,6 @@
 "use client";
 
-import BlurFade from "../magicui/blur-fade";
+import BlurFade from "../../../magicui/blur-fade";
 
 function generateCodeVerifier() {
   return [...Array(80)]

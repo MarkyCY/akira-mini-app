@@ -1,13 +1,13 @@
 import { Suspense, useState, useEffect } from "react";
 import BlurFade from "../magicui/blur-fade";
-import TopUserPost from "../stats/TopUserPost";
-import ShowResume from "../stats/ShowResume";
-import TopUserSkeleton from "../stats/TopUserSkeleton";
-import ShowResumeSkeleton from "../stats/ShowResumeSkeleton";
+import TopUserPost from "../Home/stats/TopUserPost";
+import ShowResume from "../Home/stats/ShowResume";
+import TopUserSkeleton from "../Home/stats/TopUserSkeleton";
+import ShowResumeSkeleton from "../Home/stats/ShowResumeSkeleton";
 import SparklesText from "../magicui/sparkles-text";
 import { getGroupStats } from "./GroupStatsAction";
 import { StatsDaily } from "@/lib/StatsDaily";
-import TopAdminWork from "../stats/topAdmin";
+import TopAdminWork from "../Home/stats/topAdmin";
 import Cookies from 'js-cookie';
 import WebApp from "@twa-dev/sdk";
 

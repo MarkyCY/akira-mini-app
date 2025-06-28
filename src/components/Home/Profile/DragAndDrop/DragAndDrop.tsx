@@ -12,7 +12,10 @@ import "driver.js/dist/driver.css";
 import { getIconsPacks, Packs } from "../serverAction/getIconPack";
 import { useSession } from "next-auth/react";
 import { getCanvaJSON, postCanvaJSON } from "../serverAction/dragAndDropActios";
+import { useTheme } from "next-themes";
 import SaveIcon from "@/components/icons/save";
+import OtakuLoadIcon from "@/components/icons/otakuLoad";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
 interface Item {
   id: string;
@@ -33,6 +36,7 @@ const MIN_SIZE = 40;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function DragAndDropPerfil() {
+  const { theme } = useTheme()
 
   // Definición de tutoriales disponibles
   const tutorialsConfig = {
@@ -249,6 +253,7 @@ export default function DragAndDropPerfil() {
   const [MAX_ITEMS, setMAX_ITEMS] = useState(5);
   const [isDriverActive, setIsDriverActive] = useState(false);
   const [tutorialsInitialized, setTutorialsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true)
 
   // Variables para detección de doble toque en móviles
   const touchTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
@@ -274,6 +279,7 @@ export default function DragAndDropPerfil() {
     // setBgColor(response.bgColor);
     setBgImage(response.bgImage);
     Cookies.set("perfilItems", JSON.stringify(response.items));
+    setIsLoading(false)
   }
 
   // Efecto para manejar clics fuera de los menús
@@ -393,7 +399,7 @@ export default function DragAndDropPerfil() {
   const [saved, setSaved] = useState(false);
   useEffect(() => {
     // Limpiar el timeout anterior si existe
-    
+
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
@@ -541,97 +547,116 @@ export default function DragAndDropPerfil() {
       {/* Los iconos ahora se muestran en el menú desplegable */}
 
       <div className="flex flex-col items-start gap-4">
-        <div
+        {isLoading ? (<div
           ref={perfilRef}
-          className="relative border border-gray-400 touch-none w-full"
-          id="draw-card"
+          className="relative border dark:border-neutral-800 touch-none w-full justify-center items-center"
           style={{
             aspectRatio: "2/1",
-            backgroundImage: `url(${bgImage})`,
-            backgroundColor: bgColor,
             backgroundSize: "cover",
             backgroundPosition: "center",
-          }}
-        >
-          <Image
-            alt="cal"
-            src={bgImage}
-            fill />
-          {perfilItems.map((item) => (
-            <Rnd
-              key={item.id}
-              size={{ width: item.width, height: item.height }}
-              position={{ x: item.x, y: item.y }}
-              bounds="parent"
-              lockAspectRatio
-              minWidth={MIN_SIZE}
-              minHeight={MIN_SIZE}
-              maxWidth={MAX_SIZE}
-              maxHeight={MAX_SIZE}
-              enableResizing={
-                item.isFixed
-                  ? false
-                  : {
-                    top: true,
-                    right: true,
-                    bottom: true,
-                    left: true,
-                    topRight: true,
-                    bottomRight: true,
-                    bottomLeft: true,
-                    topLeft: true,
-                  }
-              }
-              onDragStop={(_, d) => {
-                setPerfilItems((prev) =>
-                  prev.map((el) =>
-                    el.id === item.id ? { ...el, x: d.x, y: d.y } : el
-                  )
-                );
-              }}
-              onResizeStop={(_, __, ref, ___, position) => {
-                // const width = parseInt(ref.style.width);
-                // const height = parseInt(ref.style.height);
-                const size = parseInt(ref.style.width);
-                setPerfilItems((prev) =>
-                  prev.map((el) =>
-                    el.id === item.id
-                      ? {
-                        ...el,
-                        width: size,
-                        height: size,
-                        x: position.x,
-                        y: position.y,
-                      }
-                      : el
-                  )
-                );
-              }}
-              onDoubleClick={() => {
-                if (!item.isFixed) eliminarItem(item.id);
-              }}
-              onTouchStart={() => handleTouchStart(item.id, item.isFixed)}
-              style={{
-                transform: `rotate(${item.rotation}deg)`,
-                zIndex: item.isFixed ? 2 : 3,
-              }}
-            >
-              <div className="relative w-full h-full icon-dragger">
-                {item.src ? (
-                  <Image
-                    src={item.src}
-                    alt="elemento"
-                    fill
-                    className="object-contain pointer-events-none select-none touch-none p-0.5"
-                  />
-                ) : (
-                  <h3 className="flex text-center justify-center items-center text-xl text-white">Solen&apos;ya</h3>
-                )}
-              </div>
-            </Rnd>
-          ))}
+          }}>
+            {/* <OtakuLoadIcon color={theme === "dark" ? "#ea527d" : "#b50638"} className="absolute z-10 w-full h-full size-50 pt-10" /> */}
+          <FlickeringGrid
+            className="absolute inset-0 z-0 [mask-image:radial-gradient(450px_circle_at_center,white,transparent)]"
+            squareSize={4}
+            gridGap={2}
+            color={theme === "dark" ? "#fff" : "#000"}
+            maxOpacity={0.6}
+            flickerChance={0.1}
+          />
         </div>
-
+        ) : (
+          <div
+            ref={perfilRef}
+            className="relative border dark:border-neutral-800 touch-none w-full"
+            id="draw-card"
+            style={{
+              aspectRatio: "2/1",
+              backgroundImage: `url(${bgImage})`,
+              backgroundColor: bgColor,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <Image
+              alt="cal"
+              src={bgImage}
+              fill />
+            {perfilItems.map((item) => (
+              <Rnd
+                key={item.id}
+                size={{ width: item.width, height: item.height }}
+                position={{ x: item.x, y: item.y }}
+                bounds="parent"
+                lockAspectRatio
+                minWidth={MIN_SIZE}
+                minHeight={MIN_SIZE}
+                maxWidth={MAX_SIZE}
+                maxHeight={MAX_SIZE}
+                enableResizing={
+                  item.isFixed
+                    ? false
+                    : {
+                      top: true,
+                      right: true,
+                      bottom: true,
+                      left: true,
+                      topRight: true,
+                      bottomRight: true,
+                      bottomLeft: true,
+                      topLeft: true,
+                    }
+                }
+                onDragStop={(_, d) => {
+                  setPerfilItems((prev) =>
+                    prev.map((el) =>
+                      el.id === item.id ? { ...el, x: d.x, y: d.y } : el
+                    )
+                  );
+                }}
+                onResizeStop={(_, __, ref, ___, position) => {
+                  // const width = parseInt(ref.style.width);
+                  // const height = parseInt(ref.style.height);
+                  const size = parseInt(ref.style.width);
+                  setPerfilItems((prev) =>
+                    prev.map((el) =>
+                      el.id === item.id
+                        ? {
+                          ...el,
+                          width: size,
+                          height: size,
+                          x: position.x,
+                          y: position.y,
+                        }
+                        : el
+                    )
+                  );
+                }}
+                onDoubleClick={() => {
+                  if (!item.isFixed) eliminarItem(item.id);
+                }}
+                onTouchStart={() => handleTouchStart(item.id, item.isFixed)}
+                style={{
+                  transform: `rotate(${item.rotation}deg)`,
+                  zIndex: item.isFixed ? 2 : 3,
+                }}
+              >
+                <div className="relative w-full h-full icon-dragger">
+                  {item.src ? (
+                    <Image
+                      src={item.src}
+                      alt="elemento"
+                      fill
+                      className="object-contain pointer-events-none select-none touch-none p-0.5"
+                    />
+                  ) : (
+                    <h3 className="flex text-center justify-center items-center text-xl text-white">Solen&apos;ya</h3>
+                  )}
+                </div>
+              </Rnd>
+            ))}
+          </div>
+        )}
         {/* <button
           className="px-4 py-2 bg-blue-500 text-white rounded"
           onClick={() => { handleExport('png') }}
@@ -652,7 +677,7 @@ export default function DragAndDropPerfil() {
       <div id="card-buttons" className="relative flex gap-2">
         <button
           id="change-background"
-          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
+          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100 w-full"
           onClick={() => {
             setShowBackgroundMenu(!showBackgroundMenu)
             setTimeout(() => {
@@ -667,7 +692,7 @@ export default function DragAndDropPerfil() {
         </button>
         <button
           id="show-icons"
-          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-100 w-full"
+          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100 w-full"
           onClick={() => {
             setShowIconsMenu(!showIconsMenu)
             setTimeout(() => {
@@ -686,7 +711,7 @@ export default function DragAndDropPerfil() {
           <div
             id="background-menu"
             ref={backgroundMenuRef}
-            className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-2 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-x-auto`}
+            className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-x-auto`}
           >
             <div id="background-list" className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2">
               {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
@@ -720,14 +745,14 @@ export default function DragAndDropPerfil() {
           <div
             id="icons-list-father"
             ref={iconsMenuRef}
-            className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-3 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto`}
+            className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto`}
           >
             <div id="icons-list" className="flex flex-col gap-3">
               {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
                 if (pack === "background") return null;
                 return (
                   <div key={pack} className="flex flex-col gap-2 pack-name">
-                    <h3 className="text-white text-sm font-medium">{pack}</h3>
+                    <h3 className="text-neutral-700 dark:text-white text-sm font-medium">{pack}</h3>
                     <div className="flex flex-wrap gap-2">
                       {icons.map((icon) => {
                         const count = countBySrc(`${API_URL}/icons/pack/${pack}/${icon}`);

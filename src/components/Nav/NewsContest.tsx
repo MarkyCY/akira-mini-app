@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import BlurFade from "../magicui/blur-fade";
 import SparklesText from "../magicui/sparkles-text";
-import { getServerSideNews } from "../Home/News/getServerSideNews";
+import { getServerSideNews } from "../Home/Space/News/getServerSideNews";
 import { Entry } from "@/lib/getNews";
-import { MarqueeDemoVertical } from "../Home/News/MarqueeVertical";
+import { MarqueeDemoVertical } from "../Home/Space/News/MarqueeVertical";
 import Cookies from 'js-cookie';
 import OtakuLoadIcon from "../icons/otakuLoad";
 import { useSession, signOut } from "next-auth/react";

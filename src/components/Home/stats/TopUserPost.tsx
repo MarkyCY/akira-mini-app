@@ -1,4 +1,4 @@
-import BlurFade from "../magicui/blur-fade";
+import BlurFade from "../../magicui/blur-fade";
 import UserView from "./UserView";
 import { TopUser} from "@/lib/StatsDaily";
 

@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { getMALStats } from './getMALStats';
 
 import { MalUser } from '@/lib/MyAnimeList';
-import BlurFade from '../magicui/blur-fade';
+import BlurFade from '../../../magicui/blur-fade';
 
 export default function MAL_Stats() {
 
