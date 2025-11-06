@@ -19,6 +19,7 @@ export default function ShopContent() {
     })();
 
     const [selected, setSelected] = useState(season);
+    const [age, setAge] = useState<any>(new Date().getFullYear());
     const [seasonData, setSeasonData] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(true);
@@ -31,15 +32,18 @@ export default function ShopContent() {
         setPage(1);
     };
 
-    
+    const changeAge = (Age: any) => {
+        setAge(Age);
+        setPage(1);
+    }
 
     // Cargar datos iniciales
     useEffect(() => {
         setSeasonData([]);
         setPage(1);
         setHasNextPage(true);
-        loadSeasonData(1, selected, setSeasonData, setHasNextPage, setPage, setLoading, setIsFetching, true);
-    }, [selected]);
+        loadSeasonData(1, selected, age, setSeasonData, setHasNextPage, setPage, setLoading, setIsFetching, true);
+    }, [selected, age]);
 
     // Scroll infinito usando IntersectionObserver
     useEffect(() => {
@@ -48,7 +52,7 @@ export default function ShopContent() {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    loadSeasonData(page, selected, setSeasonData, setHasNextPage, setPage, setLoading, setIsFetching);
+                    loadSeasonData(page, selected, age, setSeasonData, setHasNextPage, setPage, setLoading, setIsFetching);
                 }
             },
             { rootMargin: '100px' } // Reduce el margen para evitar múltiples detecciones
@@ -60,7 +64,7 @@ export default function ShopContent() {
         return () => {
             if (target) observer.unobserve(target);
         };
-    }, [hasNextPage, loading, isFetching, page, selected]); // Añade isFetching como dependencia
+    }, [hasNextPage, loading, isFetching, page, selected, age]); // Añade isFetching como dependencia
 
     const formatStartDate = (startDate: any) => {
         const { year, month, day } = startDate;
@@ -93,7 +97,7 @@ export default function ShopContent() {
                     />
                 </BlurFade>
             </div>
-            <SeasonButton selected={selected} setSelected={changeSeason} />
+            <SeasonButton selected={selected} setSelected={changeSeason} setAge={changeAge} />
             <div className="grid grid-cols-2 items-start gap-3">
                 {seasonData.map((anime, index) => (
                     <BlurFade delay={0.1} duration={0.50} inView key={anime.id} className="flex rounded-sm group flex-col relative overflow-hidden text-foreground box-border bg-content1 outline-none z-10 outline-2 outline-focus outline-offset-2 shadow-lg rounded-large transition-transform-background motion-reduce:transition-none w-full h-[300px]">
@@ -150,6 +154,7 @@ export default function ShopContent() {
 export const loadSeasonData = async (
     page: number,
     selected: string,
+    age: any,
     setSeasonData: (data: ((prev: any[]) => any[]) | any[]) => void,
     setHasNextPage: (hasNext: boolean) => void,
     setPage: (page: ((prev: number) => number) | number) => void,
@@ -161,7 +166,7 @@ export const loadSeasonData = async (
     setLoading(true);
 
     try {
-        const data = await fetchSeasonalAnime(page, 10, selected, new Date().getFullYear());
+        const data = await fetchSeasonalAnime(page, 10, selected, age);
 
         setSeasonData(prev => (reset ? data.media : [...prev, ...data.media]));
         setHasNextPage(data.pageInfo.hasNextPage);

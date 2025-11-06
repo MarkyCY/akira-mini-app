@@ -6,27 +6,37 @@ import { Dock, DockIcon } from "@/components/ui/dock";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
-export default function SeasonButton({ selected, setSelected }: { selected: string, setSelected: any }) {
+export default function SeasonButton({ selected, setSelected, setAge }: { selected: string, setSelected: any, setAge: any }) {
+
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setAge(event.target.value);
+    };
 
     return (
-        <div className="relative">
-        
-        
-        
+        <div className="sticky top-1 flex gap-1 z-20">
             <Dock iconMagnification={50} iconDistance={100}>
-                <DockIcon className={selected === "WINTER" ? "bg-blue-400/10 dark:bg-white/10" : ""} onClick={() => setSelected("WINTER")}>
+                <DockIcon className={selected === "WINTER" ? "bg-blue-400/30 dark:bg-white/10" : ""} onClick={() => setSelected("WINTER")}>
                     <Icons.Snowflake className="size-full" />
                 </DockIcon>
-                <DockIcon className={selected === "SPRING" ? "bg-green-500/10 dark:bg-white/10" : ""} onClick={() => setSelected("SPRING")}>
+                <DockIcon className={selected === "SPRING" ? "bg-green-500/30 dark:bg-white/10" : ""} onClick={() => setSelected("SPRING")}>
                     <Icons.Hibiscus className="size-full" />
                 </DockIcon>
-                <DockIcon className={selected === "SUMMER" ? "bg-yellow-400/10 dark:bg-white/10" : ""} onClick={() => setSelected("SUMMER")}>
+                <DockIcon className={selected === "SUMMER" ? "bg-yellow-400/30 dark:bg-white/10" : ""} onClick={() => setSelected("SUMMER")}>
                     <Icons.Sun className="size-full" />
                 </DockIcon>
-                <DockIcon className={selected === "FALL" ? "bg-red-500/10 dark:bg-white/10" : ""} onClick={() => setSelected("FALL")}>
+                <DockIcon className={selected === "FALL" ? "bg-red-500/30 dark:bg-white/10" : ""} onClick={() => setSelected("FALL")}>
                     <Icons.FallenLeaf className="size-full" />
                 </DockIcon>
             </Dock>
+            <div className="bg-neutral-100 dark:bg-black/60 mx-auto flex h-[58px] w-max items-center justify-center gap-2 rounded-2xl border p-2 backdrop-blur-md">
+                <select defaultValue={new Date().getFullYear()} onChange={handleChange} className="bg-neutral-100/50 border border-neutral-300 text-gray-900 text-sm rounded-lg block w-24 p-2.5 dark:bg-neutral-900/40 dark:border-neutral-900/10 dark:placeholder-neutral-400 dark:text-white">
+                    {[...Array(5)].map((_, i) => (
+                        <option key={i}>{new Date().getFullYear() - 5 + i}</option>
+                    ))}
+                    <option>{new Date().getFullYear()}</option>
+                    <option>{new Date().getFullYear() + 1}</option>
+                </select>
+            </div>
         </div>
     );
 }
