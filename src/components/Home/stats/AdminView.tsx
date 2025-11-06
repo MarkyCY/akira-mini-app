@@ -21,12 +21,13 @@ export default function AdminView({ user }: AdminViewProps) {
             <button onClick={() => WebApp.showAlert("🚧 En desarrollo")} className='flex items-center gap-3'>
                 <Image
                     className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
-                    src={urls}
+                    src={user.avatar ? user.avatar : "/unknow.webp"}
                     alt={user.user_id.toString()}
                     width={640}
                     height={640}
                     
                     priority
+                    unoptimized
                     onError={() => handleError()}
                 />
                 <div className="dark:text-white">
@@ -40,12 +41,12 @@ export default function AdminView({ user }: AdminViewProps) {
             <Link href={`/user/${user.user_id}`} className='flex items-center gap-3'>
                 <Image
                     className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
-                    src={`${API_URL}/user/photo/${user.user_id}`}
+                    src={user.avatar ? user.avatar : "/unknow.webp"}
                     alt={user.user_id.toString()}
                     width={640}
                     height={640}
-                    
                     priority
+                    unoptimized
                 />
                 <div className="dark:text-white">
                     <div className='font-medium'>{user.first_name || "No Name"}</div>

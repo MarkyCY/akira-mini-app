@@ -29,6 +29,7 @@ export interface TopAdmin {
     deleted: number;
     kicked: number;
     banned: number;
+    avatar?: string | null;
 }
 
 export interface TopUser {
@@ -36,6 +37,7 @@ export interface TopUser {
     first_name: string | "(Sin Nombre)";
     messages: number;
     avg_chars: number;
+    avatar?: string | null;
 }
 
 export interface StatsDaily {

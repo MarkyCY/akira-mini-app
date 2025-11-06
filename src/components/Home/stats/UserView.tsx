@@ -16,7 +16,7 @@ export default function UserView({ user, premium }: {
     premium: boolean;
 }) {
     const [urls, setUrls] = useState(`${API_URL}/user/photo/${user.user_id}`);
-
+    
     const handleError = () => {
         setUrls("/unknow.webp");
     };
@@ -51,13 +51,14 @@ export default function UserView({ user, premium }: {
                         {premium && (<BorderBeam className='rounded-full' />)}
                         <Image
                             className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
-                            src={urls}
-                            alt={user.user_id.toString()}
+                            src={user.avatar ? user.avatar : "/unknow.webp"}
+                            alt={"avt"}
                             width={640}
                             height={640}
                             
                             priority
                             onError={() => handleError()}
+                            unoptimized
                         />
                     </div>
                 </div>
