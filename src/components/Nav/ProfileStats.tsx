@@ -7,6 +7,7 @@ import LoginAnimeList from "../Home/Profile/MyAnimeList/MAL_Auth";
 import Cookies from 'js-cookie';
 import MAL_Stats from "../Home/Profile/MyAnimeList/MAL_Stats";
 import DragAndDropPerfil from "../Home/Profile/DragAndDrop/DragAndDrop";
+import MAL_Animes from "../Home/Profile/MyAnimeList/MAL_Animes";
 
 export default function ProfileStats() {
     const malToken = Cookies.get('mal_token') || '';
@@ -22,11 +23,11 @@ export default function ProfileStats() {
             <BlurFade delay={0} duration={0.50} inView className="z-10">
                 <DragAndDropPerfil />
             </BlurFade>
-            <Suspense fallback={<ShowDataSkeleton />}>
+            {/* <Suspense fallback={<ShowDataSkeleton />}>
                 <ShowData />
-            </Suspense>
+            </Suspense> */}
             {/* Esto hay que corregirlo luego para poder usar el refresh token */}
-            {malToken ? <MAL_Stats /> : <LoginAnimeList />}
+            {malToken || malRefreshToken ? <><MAL_Stats /><MAL_Animes /></> : <LoginAnimeList />}
         </>
     )
 }

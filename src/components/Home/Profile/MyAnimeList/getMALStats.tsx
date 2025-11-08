@@ -9,8 +9,8 @@ export async function getMALStats(token: string) {
         },
     });
     
-    if (!response.ok) {
-        throw new Error('Error al obtener los datos');
+    if (response.status === 401) {
+        return { error: 'invalid_token'};
     }
 
     const data = await response.json();

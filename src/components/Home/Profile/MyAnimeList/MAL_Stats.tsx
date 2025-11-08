@@ -4,15 +4,24 @@ import { getMALStats } from './getMALStats';
 
 import { MalUser } from '@/lib/MyAnimeList';
 import BlurFade from '../../../magicui/blur-fade';
+import { refreshTokenMal } from './refreshTokenMal';
+import { getMALAnimes } from './getMALAnimes';
+import { AnimeAPIResponse } from '@/lib/getUserMAL';
 
 export default function MAL_Stats() {
 
     const mal_token = Cookies.get('mal_token') || '';
+    const mal_refresh_token = Cookies.get('mal_refresh_token') || '';
 
     const [stats, setStats] = useState<MalUser | null>(null);
+    const [animeStats, setAnimeStats] = useState<AnimeAPIResponse | null>(null);
 
     const expirationMinutes = 3;
     const expirationDays = expirationMinutes / (24 * 60)
+
+    const fetchAnimeData = async (mal_token: string) => {
+        await getMALAnimes(mal_token);
+    }
 
     useEffect(() => {
         const savedStats = Cookies.get('mal_data') || null;
@@ -20,9 +29,10 @@ export default function MAL_Stats() {
         if (savedStats) {
             setStats(JSON.parse(savedStats));
         } else {
-            fetchData(mal_token, setStats, expirationDays);
+            fetchData(mal_token, mal_refresh_token, setStats, expirationDays);
         }
-    }, [mal_token, setStats, expirationDays]);
+        fetchAnimeData(mal_token);
+    }, [mal_token, mal_refresh_token, setStats, expirationDays]);
 
     return (
         <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
@@ -105,10 +115,43 @@ export default function MAL_Stats() {
     )
 }
 
-const fetchData = async (mal_token: string, setStats: (stats: MalUser | null) => void, expirationDays: number) => {
+const fetchData = async (mal_token: string, mal_refresh_token: string, setStats: (stats: MalUser | null) => void, expirationDays: number) => {
     if (mal_token) {
         const res = await getMALStats(mal_token);
-        setStats(res);
-        Cookies.set('mal_data', JSON.stringify(res), { expires: expirationDays });
+
+        if (res.error && res.error === 'invalid_token') {
+            // setStats(null);
+            // Cookies.remove('mal_token');
+            const refresh = await refreshToken(mal_refresh_token);
+
+            if (refresh) {
+                const res = await getMALStats(refresh.access_token);
+                setStats(res);
+            }
+        } else {
+            setStats(res);
+            Cookies.set('mal_data', JSON.stringify(res), { expires: 1 / 24 });
+        }
+    } else if (mal_refresh_token) {
+        const refresh = await refreshToken(mal_refresh_token);
+
+        if (refresh) {
+            const res = await getMALStats(refresh.access_token);
+            setStats(res);
+        }
     }
 };
+
+const refreshToken = async (mal_refresh_token: string) => {
+    const refresh = await refreshTokenMal(mal_refresh_token)
+
+    if (!refresh.error) {
+        Cookies.set('mal_token', refresh.access_token, { expires: 1 / 24 });
+        Cookies.set('mal_refresh_token', refresh.refresh_token, { expires: 30 });
+        return refresh;
+    } else {
+        Cookies.remove('mal_token');
+        Cookies.remove('mal_refresh_token');
+        throw new Error('Error al refrescar el token');
+    }
+}

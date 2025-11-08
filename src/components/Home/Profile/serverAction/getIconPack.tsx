@@ -23,7 +23,6 @@ export async function getIconsPacks(token: string) {
     }
 
     const textData = await response.json();
-    console.log('Data:', textData);
 
     const entries: Packs = textData
 
