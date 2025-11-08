@@ -25,9 +25,10 @@ export default function MAL_Animes() {
                     onClick={() => setView(view === 'list' ? 'grid' : 'list')}
                 >
                     {view === 'list' ?
-                        <ListIcon className={`text-neutral-200/70 pt-1`} />
+                        <GridIcon className={`text-neutral-800 dark:text-neutral-200/70 pt-1`} />
                         :
-                        <GridIcon className={`text-neutral-200/70 pt-1`} />}
+                        <ListIcon className={`text-neutral-800 dark:text-neutral-200/70 pt-1`} />
+                    }
                 </div>
             </div>
             <ViewMalAnime view={view} mal_token={mal_token} mal_refresh_token={mal_refresh_token} />
