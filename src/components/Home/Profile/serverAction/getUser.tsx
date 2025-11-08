@@ -19,7 +19,6 @@ export async function getUserSide(token: string, user_id: number) {
     }
 
     const textData = await response.json();
-    console.log('Data:', textData);
 
     const entries: User = textData
 

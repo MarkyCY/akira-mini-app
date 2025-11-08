@@ -17,7 +17,6 @@ export async function getCanvaJSON(token: string) {
     }
 
     const textData = await response.json();
-    console.log('Data:', textData);
 
     return textData;
 };
@@ -40,7 +39,6 @@ export async function postCanvaJSON(token: string, data: any) {
     }
 
     const textData = await response.json();
-    console.log('Data:', textData);
 
     return textData;
 };

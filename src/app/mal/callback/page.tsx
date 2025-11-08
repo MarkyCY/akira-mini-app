@@ -63,7 +63,7 @@ export default function CallbackPage() {
   }
 
   if (tokens) {
-    Cookies.set('mal_token', tokens.access_token, { expires: 30 });
+    Cookies.set('mal_token', tokens.access_token, { expires: 1 / 24 });
     Cookies.set('mal_refresh_token', tokens.refresh_token, { expires: 30 });
     router.push('/?group=perfil');
   }
