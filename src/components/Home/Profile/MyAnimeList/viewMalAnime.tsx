@@ -5,9 +5,9 @@ import OtakuLoadIcon from "@/components/icons/otakuLoad";
 import { useTheme } from "next-themes";
 
 
-type Props = { view: 'grid' | 'list' };
+type Props = { view: 'grid' | 'list', mal_token: string, mal_refresh_token: string };
 
-export default function ViewMalAnime({ view }: Props) {
+export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Props) {
   const { data: session } = useSession();
   const token = session?.user?.accessToken as string | undefined;
   const { theme } = useTheme()
@@ -64,7 +64,7 @@ export default function ViewMalAnime({ view }: Props) {
     setPage(1);
     setHasMore(true);
 
-  }, [token]);
+  }, [token, mal_token, mal_refresh_token]);
 
   // IntersectionObserver para el infinite scroll
   useEffect(() => {

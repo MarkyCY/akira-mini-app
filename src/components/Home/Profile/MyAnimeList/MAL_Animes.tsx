@@ -14,14 +14,8 @@ export default function MAL_Animes() {
 
     const [view, setView] = useState<'grid' | 'list'>('list');
 
-
-
-    useEffect(() => {
-
-    }, [mal_token, mal_refresh_token]);
-
     return (
-        <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900 gap-2">
+        <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col bg-white border border-gray-200 rounded-lg shadow dark:bg-neutral-900 dark:border-neutral-900 p-4 gap-2">
             <div className="flex justify-between">
                 <h5 className="text-base pb-3 font-semibold text-gray-900 md:text-xl dark:text-white">
                     Lista de Animes
@@ -36,7 +30,7 @@ export default function MAL_Animes() {
                         <GridIcon className={`text-neutral-200/70 pt-1`} />}
                 </div>
             </div>
-            <ViewMalAnime view={view} />
+            <ViewMalAnime view={view} mal_token={mal_token} mal_refresh_token={mal_refresh_token} />
         </BlurFade>
     )
 }

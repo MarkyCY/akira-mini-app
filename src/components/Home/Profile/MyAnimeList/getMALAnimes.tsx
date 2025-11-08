@@ -4,11 +4,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 import { AnimeAPIResponse } from '@/lib/getUserMAL';
 
-export async function getMALAnimes(token: string) {
+export async function getMALAnimes(token: string, mal_token: string) {
     const response = await fetch(`https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status,nsfw&limit=1000&offset=0`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${mal_token}`,
             'Accept': 'application/json',
         },
     });

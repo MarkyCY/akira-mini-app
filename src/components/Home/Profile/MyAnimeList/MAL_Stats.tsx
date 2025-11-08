@@ -6,21 +6,23 @@ import { MalUser } from '@/lib/MyAnimeList';
 import BlurFade from '../../../magicui/blur-fade';
 import { refreshTokenMal } from './refreshTokenMal';
 import { getMALAnimes } from './getMALAnimes';
-import { AnimeAPIResponse } from '@/lib/getUserMAL';
+import { useSession } from "next-auth/react";
 
 export default function MAL_Stats() {
 
     const mal_token = Cookies.get('mal_token') || '';
     const mal_refresh_token = Cookies.get('mal_refresh_token') || '';
 
+    const { data: session } = useSession();
+    const token = session?.user?.accessToken as string | undefined;
+
     const [stats, setStats] = useState<MalUser | null>(null);
-    const [animeStats, setAnimeStats] = useState<AnimeAPIResponse | null>(null);
 
     const expirationMinutes = 3;
     const expirationDays = expirationMinutes / (24 * 60)
 
-    const fetchAnimeData = async (mal_token: string) => {
-        await getMALAnimes(mal_token);
+    const fetchAnimeData = async (token: string, mal_token: string) => {
+        await getMALAnimes(token, mal_token);
     }
 
     useEffect(() => {
@@ -31,7 +33,8 @@ export default function MAL_Stats() {
         } else {
             fetchData(mal_token, mal_refresh_token, setStats, expirationDays);
         }
-        fetchAnimeData(mal_token);
+        if (!token) return;
+        fetchAnimeData(token, mal_token);
     }, [mal_token, mal_refresh_token, setStats, expirationDays]);
 
     return (
