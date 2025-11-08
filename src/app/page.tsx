@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import Group from '@/components/Nav/GroupStats';
 import ProfileStats from '@/components/Nav/ProfileStats';
-import SocialContent from '@/components/Nav/SocialContent';
+// import SocialContent from '@/components/Nav/SocialContent';
 import ShinyButton from '@/components/magicui/shiny-button';
 import ShopContent from '@/components/Nav/ShopContent';
 
@@ -28,8 +28,8 @@ export default function Home() {
         return <Group />;
       case 'perfil':
         return <ProfileStats />;
-      case 'social':
-        return <SocialContent />;
+      // case 'social':
+      //   return <SocialContent />;
       case 'shop':
         return <ShopContent />;
       default:
@@ -56,13 +56,13 @@ export default function Home() {
             className={currentGroup === 'perfil' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
         </div>
-        <div onClick={() => handleComponentChange('social')} className="cursor-pointer">
+        {/* <div onClick={() => handleComponentChange('social')} className="cursor-pointer">
           <ShinyButton
             active={currentGroup === 'social' ? true : false}
             text="📺 Social"
             className={currentGroup === 'social' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
-        </div>
+        </div> */}
         <div onClick={() => handleComponentChange('shop')} className="cursor-pointer">
           <ShinyButton
             active={currentGroup === 'shop' ? true : false}
