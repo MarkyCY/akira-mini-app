@@ -155,6 +155,7 @@ const refreshToken = async (mal_refresh_token: string) => {
     } else {
         Cookies.remove('mal_token');
         Cookies.remove('mal_refresh_token');
+        window.location.reload();
         throw new Error('Error al refrescar el token');
     }
 }

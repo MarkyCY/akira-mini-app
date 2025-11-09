@@ -17,7 +17,7 @@ export async function refreshTokenMal(refreshToken: string) {
     });
 
     if (!response.ok) {
-        throw new Error('Error al refrescar el token');
+        return { error: 'failed_to_refresh' };
     }
 
     const data = await response.json();
