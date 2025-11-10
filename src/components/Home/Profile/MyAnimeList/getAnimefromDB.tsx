@@ -2,9 +2,9 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getAnimefromDB(token: string, page: number = 1, limit: number = 6) {
+export async function getAnimefromDB(token: string, page: number = 1, status: string, limit: number = 6) {
 
-    const res = await fetch(`${API_URL}/mal/get_data?page=${page}&limit=${limit}`, {
+    const res = await fetch(`${API_URL}/mal/get_data?page=${page}&limit=${limit}&status=${status}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,

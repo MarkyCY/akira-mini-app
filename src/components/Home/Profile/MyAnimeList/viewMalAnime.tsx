@@ -14,6 +14,7 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
 
     const [animeData, setAnimeData] = useState<any[]>([]);
     const [page, setPage] = useState<number>(1);
+    const [status, setStatus] = useState<string>('completed');
     const [loading, setLoading] = useState<boolean>(false);
     const [hasMore, setHasMore] = useState<boolean>(true);
 
@@ -30,7 +31,7 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
             setLoading(true);
 
             try {
-                const res = await fetchAnimefromDB(token, page, limit);
+                const res = await fetchAnimefromDB(token, page, status, limit);
                 if (!res) return;
 
                 if (res.error) {
@@ -56,7 +57,7 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
             cancelled = true;
         };
 
-    }, [page, token]);
+    }, [page, token, status]);
 
     useEffect(() => {
         if (!token) return;
@@ -93,8 +94,24 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
     const mode = view;
 
     return (
-        <div>
-            {mode === 'list' ? (
+        <div className="grid grid-cols-1">
+            <div className="flex flex-row gap-3">
+                <select defaultValue={"completed"} className="mb-3 p-2 border border-gray-300 rounded-md " onChange={(e) => {
+                    const status = e.target.value;
+                    setStatus(status);
+                    setAnimeData([]);
+                    setPage(1);
+                    setHasMore(true);
+                }}>
+                    <option value="watching">Viendo</option>
+                    <option value="completed">Completado</option>
+                    <option value="on_hold">En Espera</option>
+                    <option value="dropped">Abandonado</option>
+                    <option value="plan_to_watch">Planeando Ver</option>
+                </select>
+                
+            </div>
+            {animeData.length > 0 || loading === true ? (mode === 'list' ? (
                 <div className="flex flex-col gap-4">
                     {animeData.map((anime, index) => (
                         <div key={`${anime.title ?? index}-${index}`} className="flex items-center gap-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-2">
@@ -120,6 +137,8 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
                         </div>
                     ))}
                 </div>
+            )) : (
+                <span className="text-sm text-neutral-500 pt-7 text-center">No hay datos de anime disponibles.</span>
             )}
 
             {/* Sentinel para detectar cuando estamos al final */}
@@ -134,7 +153,7 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
     );
 }
 
-export const fetchAnimefromDB = async (token: string, page: number, limit: number) => {
-    const res = await getAnimefromDB(token, page, limit);
+export const fetchAnimefromDB = async (token: string, page: number, status: string, limit: number) => {
+    const res = await getAnimefromDB(token, page, status, limit);
     return res;
 };
