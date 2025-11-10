@@ -96,7 +96,7 @@ export default function ViewMalAnime({ view, mal_token, mal_refresh_token }: Pro
     return (
         <div className="grid grid-cols-1">
             <div className="flex flex-row gap-3">
-                <select defaultValue={"completed"} className="mb-3 p-2 border border-gray-300 rounded-md " onChange={(e) => {
+                <select defaultValue={"completed"} className="mb-3 p-2 border border-gray-300 dark:bg-neutral-800 dark:border-neutral-700 rounded-md " onChange={(e) => {
                     const status = e.target.value;
                     setStatus(status);
                     setAnimeData([]);
