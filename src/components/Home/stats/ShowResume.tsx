@@ -39,39 +39,39 @@ export default function ShowResume({ data }: { data: StatsDaily }) {
     const date_range = `${min_date_str} — ${max_date_str}`;
 
     return (
-        <BlurFade delay={0.10} duration={0.50} inView className="w-full h-auto max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
-            <h5 className="mb-1 text-sm font-semibold text-gray-700 dark:text-white">
+        <BlurFade delay={0.10} duration={0.50} inView className="w-full h-auto max-w-sm p-6 bg-card border border-border rounded-lg shadow sm:p-6">
+            <h5 className="mb-1 text-sm font-semibold text-foreground">
                 Resumen
             </h5>
-            <h6 className="mb-3 text-[12px] font-normal text-gray-500 dark:text-neutral-500">
+            <h6 className="mb-3 text-[12px] font-normal text-muted-foreground">
                 {date_range}
             </h6>
             <div className="grid grid-cols-2">
                 <div>
-                    <p className="text-sm font-normal text-gray-600 dark:text-gray-300">
+                    <p className="text-sm font-normal text-foreground">
                         <span className="font-medium">{previous_members}</span> <span className={getColor(change_members)}>{change_members >= 0 ? `+${change_members}` : change_members} ({percent_members.toFixed(1)}%)</span>
                     </p>
-                    <p className="text-xs font-normal text-gray-400 dark:text-neutral-500">Miembros</p>
+                    <p className="text-xs font-normal text-muted-foreground">Miembros</p>
                 </div>
                 <div>
-                    <p className="text-sm font-normal text-gray-600 dark:text-gray-300">
+                    <p className="text-sm font-normal text-foreground">
                         <span className="font-medium">{previous_messages}</span> <span className={getColor(change_messages)}>{change_messages >= 0 ? `+${change_messages}` : change_messages} ({percent_messages.toFixed(1)}%)</span>
                     </p>
-                    <p className="text-xs font-normal text-gray-400 dark:text-neutral-500">Mensajes</p>
+                    <p className="text-xs font-normal text-muted-foreground">Mensajes</p>
                 </div>
             </div>
             <div className="grid grid-cols-2 pt-4">
                 <div>
-                    <p className="text-sm font-normal text-gray-600 dark:text-gray-300">
+                    <p className="text-sm font-normal text-foreground">
                         <span className="font-medium">{previous_viewers}</span> <span className={getColor(change_viewers)}>{change_viewers >= 0 ? `+${change_viewers}` : change_viewers} ({percent_viewers.toFixed(1)}%)</span>
                     </p>
-                    <p className="text-xs font-normal text-gray-400 dark:text-neutral-500">Miembros que ven</p>
+                    <p className="text-xs font-normal text-muted-foreground">Miembros que ven</p>
                 </div>
                 <div>
-                    <p className="text-sm font-normal text-gray-600 dark:text-gray-300">
+                    <p className="text-sm font-normal text-foreground">
                         <span className="font-medium">{previous_posters}</span> <span className={getColor(change_posters)}>{change_posters >= 0 ? `+${change_posters}` : change_posters} ({percent_posters.toFixed(1)}%)</span>
                     </p>
-                    <p className="text-xs font-normal text-gray-400 dark:text-neutral-500">Miembros que publican</p>
+                    <p className="text-xs font-normal text-muted-foreground">Miembros que publican</p>
                 </div>
             </div>
         </BlurFade>

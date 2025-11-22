@@ -18,7 +18,7 @@ export default function AdminView({ user }: AdminViewProps) {
     };
     return (
         (typeof window !== 'undefined' ? (
-            <button onClick={() => WebApp.showAlert("🚧 En desarrollo")} className='flex items-center gap-3'>
+            <Link href={`/user/${user.user_id}`} className='flex items-center gap-3'>
                 <Image
                     className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
                     src={user.avatar ? user.avatar : "/unknow.webp"}
@@ -30,13 +30,13 @@ export default function AdminView({ user }: AdminViewProps) {
                     unoptimized
                     onError={() => handleError()}
                 />
-                <div className="dark:text-white">
+                <div className="text-foreground">
                     <div className='font-medium text-left'>{user.first_name || "No Name"}</div>
-                    <div className="text-xs text-gray-400 dark:text-neutral-500">
+                    <div className="text-xs text-muted-foreground">
                         {user.deleted} borrados, {user.banned} baneados, {user.kicked} expulsados
                     </div>
                 </div>
-            </button>
+            </Link>
         ) : (
             <Link href={`/user/${user.user_id}`} className='flex items-center gap-3'>
                 <Image
@@ -48,9 +48,9 @@ export default function AdminView({ user }: AdminViewProps) {
                     priority
                     unoptimized
                 />
-                <div className="dark:text-white">
+                <div className="text-foreground">
                     <div className='font-medium'>{user.first_name || "No Name"}</div>
-                    <div className="text-xs text-gray-400 dark:text-neutral-500">
+                    <div className="text-xs text-muted-foreground">
                         {user.deleted} borrados, {user.banned} baneados, {user.kicked} expulsados
                     </div>
                 </div>

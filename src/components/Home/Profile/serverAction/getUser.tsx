@@ -1,7 +1,5 @@
 "use server";
 
-import { User } from "@/lib/getUser";
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getUserSide(token: string, user_id: number) {
@@ -19,8 +17,6 @@ export async function getUserSide(token: string, user_id: number) {
     }
 
     const textData = await response.json();
-
-    const entries: User = textData
 
     return textData;
 };

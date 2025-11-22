@@ -4,6 +4,7 @@ import WebApp from "@twa-dev/sdk";
 import { useState } from 'react';
 import { BorderBeam } from '../../magicui/border-beam';
 import SparklesText from '../../magicui/sparkles-text';
+import Link from 'next/link';
 interface UserViewProps {
     user: TopUser;
 }
@@ -45,7 +46,7 @@ export default function UserView({ user, premium }: {
 
     return (
         (typeof window !== 'undefined' ? (
-            <button onClick={() => WebApp.showAlert("🚧 En desarrollo")} className='flex items-center gap-3'>
+            <Link href={`/user/${user.user_id}`} className='flex items-center gap-3'>
                 <div className='relative'>
                     <div className="relative">
                         {premium && (<BorderBeam className='rounded-full' />)}
@@ -62,17 +63,17 @@ export default function UserView({ user, premium }: {
                         />
                     </div>
                 </div>
-                <div className="dark:text-white" style={{direction: "ltr", textAlign: "left"}}>
+                <div className="text-foreground" style={{direction: "ltr", textAlign: "left"}}>
                     {premium ? (
                         <SparklesText className="text-sm font-medium text-left" sparklesCount={2} text={normalizeText(user.first_name || "No Name")} colors={{ first: "#FFD700", second: "#DAA520" }} />
                     ) : (
                         <div className='font-medium text-left'>{normalizeText(user.first_name || "No Name")}</div>
                     )}
-                    <div className="text-xs text-gray-400 dark:text-neutral-500">
+                    <div className="text-xs text-muted-foreground">
                         {user.messages} mensajes, {user.avg_chars} caracteres por mensaje
                     </div>
                 </div>
-            </button>
+            </Link>
         ) : null)
     )
 }
