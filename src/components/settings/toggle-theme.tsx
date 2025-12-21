@@ -34,14 +34,14 @@ export default function ToggleTheme() {
               checked={theme === item.value}
             />
             <Image
-              src={item.image}
+              src={`${item.image}`}
               alt={item.label}
               width={88}
               height={70}
               className={`rounded-lg border-2 transition-all ${
                 theme === item.value ? "border-blue-500" : "border-transparent"
               }`} // Borde azul para la opción seleccionada
-              
+              unoptimized
             />
             <span className="group mt-2 flex items-center gap-1">
               {theme === item.value ? ( // Muestra el ícono correcto según el estado
