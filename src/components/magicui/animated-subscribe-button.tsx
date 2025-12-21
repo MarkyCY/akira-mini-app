@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import cn from "classnames";
+import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
 import Cookies from 'js-cookie';
 import { SubscribeUser, UnsubscribeUser } from "@/components/Contest/suscriptionContest";

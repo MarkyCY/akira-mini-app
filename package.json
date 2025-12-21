@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
@@ -38,11 +38,11 @@
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.438.0",
     "motion": "^11.18.2",
-    "next": "15.2.1",
+    "next": "16.1.0",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "react-lite-youtube-embed": "^2.4.0",
     "react-rnd": "^10.5.2",
     "tailwind-merge": "^2.5.2",
@@ -52,13 +52,19 @@
     "@cloudflare/workers-types": "^4.20250408.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.17.30",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.7",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.0",
     "postcss": "^8.4.42",
     "tailwindcss": "^3.4.10",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.7",
+      "@types/react-dom": "19.2.3"
+    }
   }
 }
