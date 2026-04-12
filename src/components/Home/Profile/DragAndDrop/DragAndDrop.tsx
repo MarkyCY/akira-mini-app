@@ -749,7 +749,7 @@ export default function DragAndDropPerfil() {
           >
             <div id="icons-list" className="flex flex-col gap-3">
               {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
-                if (pack === "background") return null;
+                if (pack === "background" || pack === "canvas") return null;
                 return (
                   <div key={pack} className="flex flex-col gap-2 pack-name">
                     <h3 className="text-neutral-700 dark:text-white text-sm font-medium">{pack}</h3>
