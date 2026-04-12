@@ -16,11 +16,8 @@ export default function UserView({ user, premium }: {
     user: TopUser;
     premium: boolean;
 }) {
-    const [urls, setUrls] = useState(`${API_URL}/user/photo/${user.user_id}`);
+    const [error, setError] = useState(false);
     
-    const handleError = () => {
-        setUrls("/unknow.webp");
-    };
 
     function normalizeText(text: string) {
         return Array.from(text)
@@ -52,14 +49,14 @@ export default function UserView({ user, premium }: {
                         {premium && (<BorderBeam className='rounded-full' />)}
                         <Image
                             className="bg-gradient-to-r from-orange-400 to-pink-500 rounded-full w-10 h-10"
-                            src={user.avatar ? user.avatar : "/unknow.webp"}
+                            src={user.avatar && error != true ? user.avatar : "/unknow.webp"}
                             alt={"avt"}
                             width={640}
                             height={640}
                             
                             priority
-                            onError={() => handleError()}
-                            unoptimized
+                            onError={() => {setError(true); console.error(`Error loading image for user ${user.user_id}`);}}
+                            unoptimized={!(user.avatar && error !== true)}
                         />
                     </div>
                 </div>

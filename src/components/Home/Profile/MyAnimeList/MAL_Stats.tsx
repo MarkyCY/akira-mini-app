@@ -9,7 +9,6 @@ import { getMALAnimes } from './getMALAnimes';
 import { useSession } from "next-auth/react";
 
 export default function MAL_Stats() {
-
     const mal_token = Cookies.get('mal_token') || '';
     const mal_refresh_token = Cookies.get('mal_refresh_token') || '';
 
@@ -17,9 +16,6 @@ export default function MAL_Stats() {
     const token = session?.user?.accessToken as string | undefined;
 
     const [stats, setStats] = useState<MalUser | null>(null);
-
-    const expirationMinutes = 3;
-    const expirationDays = expirationMinutes / (24 * 60)
 
     const fetchAnimeData = async (token: string, mal_token: string) => {
         await getMALAnimes(token, mal_token);
@@ -30,12 +26,12 @@ export default function MAL_Stats() {
 
         if (savedStats) {
             setStats(JSON.parse(savedStats));
-        } else {
-            fetchData(mal_token, mal_refresh_token, setStats, expirationDays);
+        } else if (token) {
+            fetchData(mal_token, mal_refresh_token, token, setStats);
         }
         if (!token) return;
         fetchAnimeData(token, mal_token);
-    }, [mal_token, mal_refresh_token, setStats, expirationDays]);
+    }, [mal_token, mal_refresh_token, setStats]);
 
     return (
         <BlurFade delay={0} duration={0.50} inView className="w-full h-auto max-w-sm flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-neutral-900 dark:border-neutral-900">
@@ -118,9 +114,14 @@ export default function MAL_Stats() {
     )
 }
 
-const fetchData = async (mal_token: string, mal_refresh_token: string, setStats: (stats: MalUser | null) => void, expirationDays: number) => {
+const fetchData = async (
+    mal_token: string,
+    mal_refresh_token: string,
+    token: string,
+    setStats: (stats: MalUser | null) => void
+) => {
     if (mal_token) {
-        const res = await getMALStats(mal_token);
+        const res = await getMALStats(mal_token, token);
 
         if (res.error && res.error === 'invalid_token') {
             // setStats(null);
@@ -128,18 +129,20 @@ const fetchData = async (mal_token: string, mal_refresh_token: string, setStats:
             const refresh = await refreshToken(mal_refresh_token);
 
             if (refresh) {
-                const res = await getMALStats(refresh.access_token);
+                const res = await getMALStats(refresh.access_token, token);
                 setStats(res);
             }
         } else {
             setStats(res);
-            Cookies.set('mal_data', JSON.stringify(res), { expires: 1 / 24 });
+            Cookies.set('mal_data', JSON.stringify(res), {
+                expires: 0.5 / 24, // 30 minutos
+            });
         }
     } else if (mal_refresh_token) {
         const refresh = await refreshToken(mal_refresh_token);
 
         if (refresh) {
-            const res = await getMALStats(refresh.access_token);
+            const res = await getMALStats(refresh.access_token, token);
             setStats(res);
         }
     }
