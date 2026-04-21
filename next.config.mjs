@@ -63,6 +63,12 @@ const nextConfig = {
             port: "",
             pathname: "**",
           },
+          {
+            protocol: "https",
+            hostname: "1xg7ah.leapcellobj.com",
+            port: "",
+            pathname: "**",
+          },
           // {
           //   protocol: "http",
           //   hostname: "localhost",
@@ -71,7 +77,7 @@ const nextConfig = {
           // },
           // {
           //   protocol: "http",
-          //   hostname: "localhost",
+          //   hostname: "192.168.1.101",
           //   port: "5000",
           //   pathname: "**",
           // },

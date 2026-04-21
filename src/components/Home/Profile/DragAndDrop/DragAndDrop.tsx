@@ -33,7 +33,7 @@ interface Item {
 const DEFAULT_SIZE = 80;
 const MAX_SIZE = DEFAULT_SIZE * 3;
 const MIN_SIZE = 40;
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_S3_URL;
 
 export default function DragAndDropPerfil() {
   const { theme } = useTheme()
@@ -723,12 +723,12 @@ export default function DragAndDropPerfil() {
                     onClick={(e) => {
                       // Evitar que el evento se propague al documento
                       e.stopPropagation();
-                      setBgImage(`${API_URL}/icons/pack/${pack}/${icon}`);
+                      setBgImage(`${API_URL}/${pack}/${icon}`);
                       // Ya no cerramos el menú automáticamente para permitir seleccionar más fondos
                     }}
                   >
                     <Image
-                      src={`${API_URL}/icons/pack/${pack}/${icon}`}
+                      src={`${API_URL}/${pack}/${icon}`}
                       alt={icon}
                       fill
                       className="object-cover rounded-md"
@@ -755,13 +755,13 @@ export default function DragAndDropPerfil() {
                     <h3 className="text-neutral-700 dark:text-white text-sm font-medium">{pack}</h3>
                     <div className="flex flex-wrap gap-2">
                       {icons.map((icon) => {
-                        const count = countBySrc(`${API_URL}/icons/pack/${pack}/${icon}`);
+                        const count = countBySrc(`${API_URL}/${pack}/${icon}`);
                         const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
 
                         return (
                           <Image
                             key={icon}
-                            src={`${API_URL}/icons/pack/${pack}/${icon}`}
+                            src={`${API_URL}/${pack}/${icon}`}
                             alt={icon}
                             width={30}
                             height={30}
@@ -778,7 +778,7 @@ export default function DragAndDropPerfil() {
 
                               const newItem = {
                                 id,
-                                src: `${API_URL}/icons/pack/${pack}/${icon}`,
+                                src: `${API_URL}/${pack}/${icon}`,
                                 x,
                                 y,
                                 width: DEFAULT_SIZE,
