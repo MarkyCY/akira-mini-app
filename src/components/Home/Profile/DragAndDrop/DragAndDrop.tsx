@@ -5,9 +5,9 @@ import Image from "next/image";
 import Cookies from "js-cookie";
 
 import { driver } from "driver.js";
+// @ts-ignore
 import "driver.js/dist/driver.css";
 
-// @ts-ignore
 // import gifshot from 'gifshot';
 import { getIconsPacks, Packs } from "../serverAction/getIconPack";
 import { useSession } from "next-auth/react";
