@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 export interface FanartSearchResult {
     id: string;

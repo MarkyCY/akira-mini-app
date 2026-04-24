@@ -69,6 +69,18 @@ const nextConfig = {
             port: "",
             pathname: "**",
           },
+          {
+            protocol: "https",
+            hostname: "assets.fanart.tv",
+            port: "",
+            pathname: "**",
+          },
+          {
+            protocol: "https",
+            hostname: "images.fanart.tv",
+            port: "",
+            pathname: "**",
+          },
           // {
           //   protocol: "http",
           //   hostname: "localhost",

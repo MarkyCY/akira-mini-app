@@ -8,9 +8,8 @@ import { driver } from "driver.js";
 // @ts-ignore
 import "driver.js/dist/driver.css";
 
-// import gifshot from 'gifshot';
-import { getIconsPacks, Packs } from "../serverAction/getIconPack";
 import { useSession } from "next-auth/react";
+import { searchAnimeFanart, getAnimeBackgroud, getAnimeIcon, FanartSearchResult } from "../serverAction/searchAnimeFanart";
 import { getCanvaJSON, postCanvaJSON } from "../serverAction/dragAndDropActios";
 import { useTheme } from "next-themes";
 import SaveIcon from "@/components/icons/save";
@@ -246,7 +245,6 @@ export default function DragAndDropPerfil() {
   const [perfilItems, setPerfilItems] = useState<Item[]>([]);
   const [bgColor, setBgColor] = useState("#e0e0e0");
   const [bgImage, setBgImage] = useState("https://i.ibb.co/Qjcqy6wL/profile-background.jpg");
-  const [IconsPacks, setIconsPacks] = useState<Packs>()
   const [canvaRequestJSON, setCanvaRequestJSON] = useState<string>("{}");
   const [showBackgroundMenu, setShowBackgroundMenu] = useState(false);
   const [showIconsMenu, setShowIconsMenu] = useState(false);
@@ -255,6 +253,15 @@ export default function DragAndDropPerfil() {
   const [tutorialsInitialized, setTutorialsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true)
 
+  // Estados para búsqueda de anime
+  const [searchQuery, setSearchQuery] = useState("");
+  const [animeResults, setAnimeResults] = useState<FanartSearchResult[]>([]);
+  const [selectedAnime, setSelectedAnime] = useState<FanartSearchResult | null>(null);
+  const [animeBackgrounds, setAnimeBackgrounds] = useState<any[]>([]);
+  const [animeIcons, setAnimeIcons] = useState<any[]>([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+
   // Variables para detección de doble toque en móviles
   const touchTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
   const lastTouchTime = useRef<{ [key: string]: number }>({});
@@ -262,15 +269,72 @@ export default function DragAndDropPerfil() {
   // Referencias para los menús
   const backgroundMenuRef = useRef<HTMLDivElement>(null);
   const iconsMenuRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLDivElement>(null);
 
   const perfilRef = useRef<HTMLDivElement>(null);
 
   const countBySrc = (src: string) => perfilItems.filter((item) => item.src === src).length;
 
-  const fetchInconsPacks = async (token: string) => {
-    const response = await getIconsPacks(token);
-    setIconsPacks(response);
-  }
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSearchAnime = async (query: string) => {
+    setSearchQuery(query);
+    if (query.length < 2) {
+      setAnimeResults([]);
+      setShowSearchDropdown(false);
+      return;
+    }
+
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+
+    searchTimeout.current = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const results = await searchAnimeFanart(query);
+        const filtered = results.filter((anime) => parseInt(anime.image_count) > 1);
+        setAnimeResults(filtered);
+        setShowSearchDropdown(filtered.length > 0);
+      } catch (error) {
+        console.error("Error searching anime:", error);
+        setAnimeResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+  };
+
+  const handleSelectAnime = async (anime: FanartSearchResult) => {
+    if (!anime.TVDB_ID) return;
+
+    setSelectedAnime(anime);
+    setSearchQuery(anime.title);
+    setShowSearchDropdown(false);
+    setShowBackgroundMenu(false);
+    setShowIconsMenu(false);
+
+    try {
+      const [backgrounds, icons] = await Promise.all([
+        getAnimeBackgroud(anime.TVDB_ID),
+        getAnimeIcon(anime.TVDB_ID)
+      ]);
+      setAnimeBackgrounds(backgrounds);
+      setAnimeIcons(icons);
+    } catch (error) {
+      console.error("Error fetching anime images:", error);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSelectedAnime(null);
+    setSearchQuery("");
+    setAnimeResults([]);
+    setAnimeBackgrounds([]);
+    setAnimeIcons([]);
+    setShowBackgroundMenu(false);
+    setShowIconsMenu(false);
+  };
 
   const fetchCanvaJSON = async (token: string) => {
     const response = await getCanvaJSON(token)
@@ -285,6 +349,11 @@ export default function DragAndDropPerfil() {
   // Efecto para manejar clics fuera de los menús
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Cerrar dropdown de búsqueda si está abierto y se hace clic fuera
+      if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node) && showSearchDropdown) {
+        setShowSearchDropdown(false);
+      }
+
       // Cerrar menú de fondos si está abierto y se hace clic fuera
       if (backgroundMenuRef.current && !backgroundMenuRef.current.contains(event.target as Node) && showBackgroundMenu) {
         setShowBackgroundMenu(false);
@@ -303,7 +372,7 @@ export default function DragAndDropPerfil() {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside as any);
     };
-  }, [showBackgroundMenu, showIconsMenu]);
+  }, [showBackgroundMenu, showIconsMenu, showSearchDropdown]);
 
   // Efecto para inicializar y mostrar tutoriales automáticamente
   useEffect(() => {
@@ -325,7 +394,6 @@ export default function DragAndDropPerfil() {
 
     // Si esta el token procedemos a pedir los pack e iconos
     if (token) {
-      fetchInconsPacks(token)
       fetchCanvaJSON(token)
     }
 
@@ -674,138 +742,161 @@ export default function DragAndDropPerfil() {
           Limpiar todo
         </button> */}
       </div>
-      <div id="card-buttons" className="relative flex gap-2">
-        <button
-          id="change-background"
-          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100 w-full"
-          onClick={() => {
-            setShowBackgroundMenu(!showBackgroundMenu)
-            setTimeout(() => {
-              if (!isTutorialViewed('backgroundDriver')) {
-                const driverBck = createBackgroundDriver();
-                driverBck.drive();
-              }
-            }, 100)
-          }}
-        >
-          Cambiar Fondo
-        </button>
-        <button
-          id="show-icons"
-          className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100 w-full"
-          onClick={() => {
-            setShowIconsMenu(!showIconsMenu)
-            setTimeout(() => {
-              if (!isTutorialViewed('iconsDriver')) {
-                const driverIcn = createIconsDriver();
-                driverIcn.drive();
-              }
-            }, 100)
-          }}
-        >
-          Mostrar Iconos
-        </button>
+      <div id="card-buttons" className="relative flex flex-col gap-2">
+        {/* Input de búsqueda - solo visible cuando no hay anime seleccionado */}
+        {!selectedAnime && (
+          <div className="relative" ref={searchInputRef}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearchAnime(e.target.value)}
+              placeholder="Buscar anime..."
+              className="w-full p-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-900 dark:text-white"
+            />
+            {isSearching && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin" />
+              </div>
+            )}
+            
+            {/* Dropdown de resultados */}
+            {showSearchDropdown && animeResults.length > 0 && (
+              <div className="absolute z-50 w-full mt-1 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                {animeResults.map((anime) => (
+                  <div
+                    key={anime.id}
+                    className="flex items-center gap-3 p-2 cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                    onClick={() => handleSelectAnime(anime)}
+                  >
+                    {anime.poster && (
+                      <Image
+                        src={anime.poster}
+                        alt={anime.title}
+                        width={40}
+                        height={60}
+                        className="object-cover rounded"
+                        unoptimized
+                      />
+                    )}
+                    <span className="text-sm text-neutral-700 dark:text-neutral-200">{anime.title}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-        {/* Menú de fondos */}
-        {showBackgroundMenu && IconsPacks && (
+        {/* Botones Fondos e Iconos - visibles cuando hay anime seleccionado */}
+        {selectedAnime && (
+          <div className="flex gap-2">
+            <button
+              id="change-background"
+              className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100 w-full"
+              onClick={() => {
+                setShowBackgroundMenu(!showBackgroundMenu)
+                setShowIconsMenu(false)
+              }}
+            >
+              Fondos
+            </button>
+            <button
+              id="show-icons"
+              className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100 w-full"
+              onClick={() => {
+                setShowIconsMenu(!showIconsMenu)
+                setShowBackgroundMenu(false)
+              }}
+            >
+              Iconos
+            </button>
+            <button
+              onClick={handleClearSearch}
+              className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {/* Menú de fondos del anime */}
+        {showBackgroundMenu && selectedAnime && animeBackgrounds.length > 0 && (
           <div
             id="background-menu"
             ref={backgroundMenuRef}
             className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-2 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-x-auto`}
           >
             <div id="background-list" className="grid grid-flow-col grid-rows-2 auto-cols-max gap-2">
-              {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
-                if (pack !== "background") return null;
-                return icons.map((icon) => (
-                  <div
-                    key={icon}
-                    className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity background-img"
-                    onClick={(e) => {
-                      // Evitar que el evento se propague al documento
-                      e.stopPropagation();
-                      setBgImage(`${API_URL}/${pack}/${icon}`);
-                      // Ya no cerramos el menú automáticamente para permitir seleccionar más fondos
-                    }}
-                  >
-                    <Image
-                      src={`${API_URL}/${pack}/${icon}`}
-                      alt={icon}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                ));
-              })}
+              {animeBackgrounds.map((bg) => (
+                <div
+                  key={bg.id}
+                  className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity background-img"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setBgImage(bg.link);
+                  }}
+                >
+                  <Image
+                    src={bg.link}
+                    alt={`background-${bg.id}`}
+                    fill
+                    className="object-cover rounded-md"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Menú de iconos */}
-        {showIconsMenu && IconsPacks && (
+        {/* Menú de iconos del anime */}
+        {showIconsMenu && selectedAnime && animeIcons.length > 0 && (
           <div
             id="icons-list-father"
             ref={iconsMenuRef}
             className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto`}
           >
-            <div id="icons-list" className="flex flex-col gap-3">
-              {Object.entries(IconsPacks.packs).map(([pack, icons]) => {
-                if (pack === "background" || pack === "canvas") return null;
+            <div id="icons-list" className="flex flex-wrap gap-2">
+              {animeIcons.map((icon) => {
+                const count = countBySrc(icon.link);
+                const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
+
                 return (
-                  <div key={pack} className="flex flex-col gap-2 pack-name">
-                    <h3 className="text-neutral-700 dark:text-white text-sm font-medium">{pack}</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {icons.map((icon) => {
-                        const count = countBySrc(`${API_URL}/${pack}/${icon}`);
-                        const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
+                  <Image
+                    key={icon.id}
+                    src={icon.link}
+                    alt={`icon-${icon.id}`}
+                    width={40}
+                    height={40}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isMaxed) return;
 
-                        return (
-                          <Image
-                            key={icon}
-                            src={`${API_URL}/${pack}/${icon}`}
-                            alt={icon}
-                            width={30}
-                            height={30}
-                            onClick={(e) => {
-                              // Evitar que el evento se propague al documento
-                              e.stopPropagation();
+                      const rect = perfilRef.current?.getBoundingClientRect();
+                      const id = Date.now().toString();
+                      const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
+                      const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
 
-                              if (isMaxed) return;
+                      const newItem = {
+                        id,
+                        src: icon.link,
+                        x,
+                        y,
+                        width: DEFAULT_SIZE,
+                        height: DEFAULT_SIZE,
+                        rotation: 0,
+                      };
 
-                              const rect = perfilRef.current?.getBoundingClientRect();
-                              const id = Date.now().toString();
-                              const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
-                              const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
+                      const newItems = [...perfilItems, newItem];
+                      setPerfilItems(newItems);
 
-                              const newItem = {
-                                id,
-                                src: `${API_URL}/${pack}/${icon}`,
-                                x,
-                                y,
-                                width: DEFAULT_SIZE,
-                                height: DEFAULT_SIZE,
-                                rotation: 0,
-                              };
-
-                              const newItems = [...perfilItems, newItem];
-                              setPerfilItems(newItems);
-
-                              // Ya no cerramos el menú automáticamente para permitir seleccionar más iconos
-
-                              // Mostrar tutorial de arrastrar si es el primer icono y no se ha visto el tutorial
-                              if (!isTutorialViewed('dragIcnDriver')) {
-                                setTimeout(() => {
-                                  const driverDrag = createDragIcn();
-                                  driverDrag.drive();
-                                }, 100);
-                              }
-
-                            }}
-                            className={`cursor-pointer ${isMaxed ? "opacity-30 pointer-events-none" : ""} icon-img`}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
+                      if (!isTutorialViewed('dragIcnDriver')) {
+                        setTimeout(() => {
+                          const driverDrag = createDragIcn();
+                          driverDrag.drive();
+                        }, 100);
+                      }
+                    }}
+                    className={`cursor-pointer rounded-md ${isMaxed ? "opacity-30 pointer-events-none" : ""} icon-img`}
+                  />
                 );
               })}
             </div>
