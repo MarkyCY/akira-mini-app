@@ -768,7 +768,7 @@ export default function DragAndDropPerfil() {
                     className="flex items-center gap-3 p-2 cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700"
                     onClick={() => handleSelectAnime(anime)}
                   >
-                    {anime.poster && (
+                    {/* {anime.poster && (
                       <Image
                         src={anime.poster}
                         alt={anime.title}
@@ -777,7 +777,7 @@ export default function DragAndDropPerfil() {
                         className="object-cover rounded"
                         unoptimized
                       />
-                    )}
+                    )} */}
                     <span className="text-sm text-neutral-700 dark:text-neutral-200">{anime.title}</span>
                   </div>
                 ))}
