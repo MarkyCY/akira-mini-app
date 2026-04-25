@@ -14,7 +14,7 @@ import { useTheme } from "next-themes";
 import SaveIcon from "@/components/icons/save";
 import OtakuLoadIcon from "@/components/icons/otakuLoad";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
-import { CldImage } from 'next-cloudinary';
+import { CldImage, getCldImageUrl } from 'next-cloudinary';
 
 interface Item {
   id: string;
@@ -36,6 +36,14 @@ const API_URL = process.env.NEXT_PUBLIC_S3_URL;
 
 export default function DragAndDropPerfil() {
   const { theme } = useTheme()
+
+  // Construyes la URL transformada
+  const getCloudinaryUrl = (link : string) => getCldImageUrl({
+    src: link,
+    width: 600,
+    height: 300,
+    deliveryType: "fetch",
+  });
 
   // Definición de tutoriales disponibles
   const tutorialsConfig = {
@@ -651,6 +659,7 @@ export default function DragAndDropPerfil() {
               alt=""
               src={bgImage}
               fill
+              unoptimized
             />
             {/* Iconos */}
             {perfilItems.map((item) => (
@@ -832,15 +841,14 @@ export default function DragAndDropPerfil() {
                   className="relative w-16 h-16 cursor-pointer hover:opacity-80 transition-opacity background-img"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setBgImage(bg.link);
+                    setBgImage(getCloudinaryUrl(bg.link));
                   }}
                 >
-                  <CldImage
-                    src={bg.link}
+                  <Image
+                    src={getCloudinaryUrl(bg.link)}
                     alt={`background-${bg.id}`}
-                    width={400}
-                    height={200}
-                    deliveryType="fetch"
+                    fill
+                    unoptimized
                     className="object-cover rounded-md"
                   />
                 </div>
