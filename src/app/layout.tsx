@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+// @ts-ignore
 import "./globals.css";
 import NavBarButtons from "@/components/Home/nav-buttons";
 import { AuthProvider } from "@/contexts/AuthContext";

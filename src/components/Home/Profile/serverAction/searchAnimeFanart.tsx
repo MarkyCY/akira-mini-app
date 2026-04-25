@@ -34,7 +34,7 @@ export async function searchAnimeFanart(anime: string): Promise<FanartSearchResu
     return results;
 };
 
-export async function getAnimeBackgroud(id: any): Promise<FanartSearchResult[]> {
+export async function getAnimeBackgroud(id: any): Promise<{ id: string; link: string; width: number; height: number }[]> {
     const response = await fetch(`https://webservice.fanart.tv/v3.2/tv/${id}?api_key=426e6728c1b5c655975e88a14fc1a413`);
     
     if (!response.ok) {
@@ -47,14 +47,14 @@ export async function getAnimeBackgroud(id: any): Promise<FanartSearchResult[]> 
     const data = textData.showbackground.map((item: any) => ({
         id: item.id,
         link: item.url,
-        with: item.width,
+        width: item.width,
         height: item.height,
     }));
 
     return data;
 };
 
-export async function getAnimeIcon(id: any): Promise<FanartSearchResult[]> {
+export async function getAnimeIcon(id: any): Promise<{ id: string; link: string; width: number; height: number }[]> {
     const response = await fetch(`https://webservice.fanart.tv/v3.2/tv/${id}?api_key=426e6728c1b5c655975e88a14fc1a413`);
     
     if (!response.ok) {
@@ -67,7 +67,7 @@ export async function getAnimeIcon(id: any): Promise<FanartSearchResult[]> {
     const data = textData.hdtvlogo.map((item: any) => ({
         id: item.id,
         link: item.url,
-        with: item.width,
+        width: item.width,
         height: item.height,
     }));
 

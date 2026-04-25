@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import html2canvas from "html2canvas";
 import { Rnd } from "react-rnd";
-import Image from "next/image";
+import Image from 'next/image';
 import Cookies from "js-cookie";
 
 import { driver } from "driver.js";
@@ -15,6 +14,7 @@ import { useTheme } from "next-themes";
 import SaveIcon from "@/components/icons/save";
 import OtakuLoadIcon from "@/components/icons/otakuLoad";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
+import { CldImage } from 'next-cloudinary';
 
 interface Item {
   id: string;
@@ -257,8 +257,8 @@ export default function DragAndDropPerfil() {
   const [searchQuery, setSearchQuery] = useState("");
   const [animeResults, setAnimeResults] = useState<FanartSearchResult[]>([]);
   const [selectedAnime, setSelectedAnime] = useState<FanartSearchResult | null>(null);
-  const [animeBackgrounds, setAnimeBackgrounds] = useState<any[]>([]);
-  const [animeIcons, setAnimeIcons] = useState<any[]>([]);
+  const [animeBackgrounds, setAnimeBackgrounds] = useState<{ id: string; link: string; width: number; height: number }[]>([]);
+  const [animeIcons, setAnimeIcons] = useState<{ id: string; link: string; width: number; height: number }[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -623,7 +623,7 @@ export default function DragAndDropPerfil() {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}>
-            {/* <OtakuLoadIcon color={theme === "dark" ? "#ea527d" : "#b50638"} className="absolute z-10 w-full h-full size-50 pt-10" /> */}
+          {/* <OtakuLoadIcon color={theme === "dark" ? "#ea527d" : "#b50638"} className="absolute z-10 w-full h-full size-50 pt-10" /> */}
           <FlickeringGrid
             className="absolute inset-0 z-0 [mask-image:radial-gradient(450px_circle_at_center,white,transparent)]"
             squareSize={4}
@@ -646,10 +646,14 @@ export default function DragAndDropPerfil() {
               backgroundPosition: "center",
             }}
           >
-            <Image
-              alt="cal"
+            {/* Imagen de Fondo */}
+            <CldImage
+              alt=""
               src={bgImage}
-              fill />
+              width={400}
+              height={200}
+            />
+            {/* Iconos */}
             {perfilItems.map((item) => (
               <Rnd
                 key={item.id}
@@ -657,10 +661,6 @@ export default function DragAndDropPerfil() {
                 position={{ x: item.x, y: item.y }}
                 bounds="parent"
                 lockAspectRatio
-                minWidth={MIN_SIZE}
-                minHeight={MIN_SIZE}
-                maxWidth={MAX_SIZE}
-                maxHeight={MAX_SIZE}
                 enableResizing={
                   item.isFixed
                     ? false
@@ -683,16 +683,15 @@ export default function DragAndDropPerfil() {
                   );
                 }}
                 onResizeStop={(_, __, ref, ___, position) => {
-                  // const width = parseInt(ref.style.width);
-                  // const height = parseInt(ref.style.height);
-                  const size = parseInt(ref.style.width);
+                  const width = parseInt(ref.style.width);
+                  const height = parseInt(ref.style.height);
                   setPerfilItems((prev) =>
                     prev.map((el) =>
                       el.id === item.id
                         ? {
                           ...el,
-                          width: size,
-                          height: size,
+                          width: width,
+                          height: height,
                           x: position.x,
                           y: position.y,
                         }
@@ -713,8 +712,10 @@ export default function DragAndDropPerfil() {
                   {item.src ? (
                     <Image
                       src={item.src}
-                      alt="elemento"
-                      fill
+                      alt="Icon"
+                      width={item.width}
+                      height={item.height}
+                      unoptimized
                       className="object-contain pointer-events-none select-none touch-none p-0.5"
                     />
                   ) : (
@@ -758,7 +759,7 @@ export default function DragAndDropPerfil() {
                 <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin" />
               </div>
             )}
-            
+
             {/* Dropdown de resultados */}
             {showSearchDropdown && animeResults.length > 0 && (
               <div className="absolute z-50 w-full mt-1 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
@@ -835,10 +836,12 @@ export default function DragAndDropPerfil() {
                     setBgImage(bg.link);
                   }}
                 >
-                  <Image
+                  <CldImage
                     src={bg.link}
                     alt={`background-${bg.id}`}
-                    fill
+                    width={400}
+                    height={200}
+                    deliveryType="fetch"
                     className="object-cover rounded-md"
                   />
                 </div>
@@ -860,12 +863,13 @@ export default function DragAndDropPerfil() {
                 const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
 
                 return (
-                  <Image
+                  <CldImage
                     key={icon.id}
                     src={icon.link}
                     alt={`icon-${icon.id}`}
-                    width={40}
-                    height={40}
+                    width={130}
+                    height={100}
+                    deliveryType="fetch"
                     onClick={(e) => {
                       e.stopPropagation();
                       if (isMaxed) return;
@@ -875,17 +879,23 @@ export default function DragAndDropPerfil() {
                       const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
                       const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
 
+                      const maxWidth = 300;
+                      const scale = icon.width > maxWidth ? maxWidth / icon.width : 1;
+                      const newWidth = icon.width * scale;
+                      const newHeight = icon.height * scale;
+
                       const newItem = {
                         id,
                         src: icon.link,
-                        x,
-                        y,
-                        width: DEFAULT_SIZE,
-                        height: DEFAULT_SIZE,
+                        x: 0,
+                        y: 0,
+                        width: newWidth,
+                        height: newHeight,
                         rotation: 0,
                       };
 
                       const newItems = [...perfilItems, newItem];
+                      console.log("Agregando nuevo item:", newItem);
                       setPerfilItems(newItems);
 
                       if (!isTutorialViewed('dragIcnDriver')) {
