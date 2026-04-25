@@ -647,11 +647,10 @@ export default function DragAndDropPerfil() {
             }}
           >
             {/* Imagen de Fondo */}
-            <CldImage
+            <Image
               alt=""
               src={bgImage}
-              width={400}
-              height={200}
+              fill
             />
             {/* Iconos */}
             {perfilItems.map((item) => (
