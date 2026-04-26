@@ -13,6 +13,7 @@ interface Contest {
   subscription: [
     {
       user: Number,
+      avatar?: string,
     },
   ],
   created_by: number;

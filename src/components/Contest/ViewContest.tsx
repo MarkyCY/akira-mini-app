@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CldImage } from 'next-cloudinary';
 import Countdown from './ContDown';
 import { useState, useEffect } from 'react';
 import { AnimatedSubscribeButton } from '../magicui/animated-subscribe-button';
@@ -62,9 +62,9 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
 
         const userId = 873919300; //Cambiar Importante
         for (let i = 0; i < subscription?.length; i++) {
-                if (subscription[i].user === userId) {
-                    return true;
-                }
+            if (subscription[i].user === userId) {
+                return true;
+            }
         }
         return false;
     }
@@ -84,12 +84,12 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
     }, [expanded]);
 
     const totalAvatars = contest.subscription?.length || 0;
-    const avatarUrls = contest.subscription?.map((userId) => `${API_URL}/user/photo/${userId.user}`).slice(0, 4);
+    const avatarUrls = contest.subscription?.map((userId) => userId.avatar).slice(0, 4);
     const extraAvatars = totalAvatars > 4 ? totalAvatars - 4 : null;
     const [imgSrc, setImgSrc] = useState(contest.img);
 
     return (
-        <BlurFade delay={0.1} duration={0.50} inView 
+        <BlurFade delay={0.1} duration={0.50} inView
             className={`transition-none overflow-auto duration-75 ease-in ${expanded ? 'h-screen w-96 fixed top-0 z-50 bg-neutral-50 dark:bg-black' : ' w-full shadow-md rounded-xl border border-neutral-600/10 dark:border-neutral-300/10'
                 } `}
         >
@@ -106,23 +106,24 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
                             <button className="text-2xl pb-1 font-bold text-white dark:text-white">:</button>
                         </div>
                     </div>
-                    <Image
+                    <CldImage
                         onClick={() => setExpanded(prev => !prev)}
                         className={`${expanded ? "rounded-b-2xl" : "rounded-2xl"}`}
                         src={imgSrc}
                         alt="Image not found"
                         width="640"
                         height="640"
-                        onError={() => setImgSrc("/mistic_green_forest.webp")}
-                        
+                        deliveryType='fetch'
+                    // onError={() => setImgSrc("/mistic_green_forest.webp")}
+
                     />
                 </figure>
                 <div className={`absolute bottom-0 ${expanded ? 'top-80' : ''}`}>
                     {expanded ?
-                        <AvatarCircles 
-                        className='m-2' 
-                        avatarUrls={avatarUrls || []} 
-                        numPeople={extraAvatars || undefined} />
+                        <AvatarCircles
+                            className='m-2'
+                            avatarUrls={avatarUrls || []}
+                            numPeople={extraAvatars || undefined} />
                         : null}
                     <figcaption className="flex items-center box-border h-16 pl-2 w-full rounded-t-xl bottom-0 text-lg text-white bg-neutral-400/30 dark:bg-neutral-900/30 backdrop-blur-sm">
                         <div className='ml-3 flex-grow'>
@@ -136,19 +137,29 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
                             </h2>
                         </div>
                     </figcaption>
-                    <div className={`flex items-center box-border pl-2 w-full bottom-0 text-lg text-white bg-neutral-50 ${expanded ? 'dark:bg-black h-auto py-5' : 'dark:bg-neutral-900 h-24 rounded-b-xl'
-                        } `}>
-                        <div className='ml-1 flex-grow'>
-                            <p className='ml-1 text-sm text-left leading-4 text-neutral-800 dark:text-neutral-200'>
-                                {expanded ? contest.description : truncateDescription(contest.description, 13)}
+                    <div className={`flex items-center box-border px-3 w-full bottom-0 text-lg text-white 
+                    ${expanded
+                            ? 'dark:bg-black h-auto py-5'
+                            : 'dark:bg-neutral-900 h-24 rounded-b-xl'
+                        }`}>
+
+                        {/* Descripción - izquierda */}
+                        <div className='flex-1 min-w-0 pr-3'>
+                            <p className='text-sm text-left leading-4 text-neutral-800 dark:text-neutral-200'>
+                                {expanded
+                                    ? contest.description
+                                    : truncateDescription(contest.description, 20)}
                             </p>
                         </div>
-                        <div className="mx-2 text-center">
-                            <div className="text-sm text-neutral-600 dark:text-neutral-300">{type(contest.type)}</div>
-                            <div className="text-2xl font-bold text-neutral-700 dark:text-white">
+
+                        {/* Contador - derecha */}
+                        <div className="flex-shrink-0 text-center min-w-[70px]">
+                            <div className="text-sm text-neutral-600 dark:text-neutral-300">
+                                {type(contest.type)}
+                            </div>
+                            <div className="text-2xl font-bold leading-tight text-neutral-700 dark:text-white">
                                 <Countdown Timestamp={contest.end_date} />
                             </div>
-
                             {contest.type === 'photo' ? (
                                 <div className="text-xs text-neutral-600 dark:text-neutral-300">
                                     {amount_by_type(contest.type, contest.amount_photo)}

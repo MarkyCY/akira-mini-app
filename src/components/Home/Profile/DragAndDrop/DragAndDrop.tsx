@@ -14,7 +14,8 @@ import { useTheme } from "next-themes";
 import SaveIcon from "@/components/icons/save";
 import OtakuLoadIcon from "@/components/icons/otakuLoad";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
-import { CldImage, getCldImageUrl } from 'next-cloudinary';
+import { getCldImageUrl } from 'next-cloudinary';
+import XIcon from "@/components/icons/x";
 
 interface Item {
   id: string;
@@ -824,9 +825,9 @@ export default function DragAndDropPerfil() {
             </button>
             <button
               onClick={handleClearSearch}
-              className="p-2 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100"
+              className="p-2 w-20 bg-neutral-200/10 border border-neutral-500/25 rounded-lg text-neutral-700 dark:text-neutral-100"
             >
-              ×
+              <XIcon/>
             </button>
           </div>
         )}
