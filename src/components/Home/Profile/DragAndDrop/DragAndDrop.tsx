@@ -38,10 +38,14 @@ export default function DragAndDropPerfil() {
   const { theme } = useTheme()
 
   // Construyes la URL transformada
-  const getCloudinaryUrl = (link : string) => getCldImageUrl({
+  const getCloudinaryUrl = (
+    link: string,
+    width: number = 600,
+    height: number = 300
+  ) => getCldImageUrl({
     src: link,
-    width: 600,
-    height: 300,
+    width,
+    height,
     deliveryType: "fetch",
   });
 
@@ -719,11 +723,11 @@ export default function DragAndDropPerfil() {
                 <div className="relative w-full h-full icon-dragger">
                   {item.src ? (
                     <Image
-                      src={item.src}
-                      alt="Icon"
+                      src={getCloudinaryUrl(item.src, 200, 100)}
+                      unoptimized
                       width={item.width}
                       height={item.height}
-                      unoptimized
+                      alt="Icon"
                       className="object-contain pointer-events-none select-none touch-none p-0.5"
                     />
                   ) : (
@@ -868,15 +872,14 @@ export default function DragAndDropPerfil() {
               {animeIcons.map((icon) => {
                 const count = countBySrc(icon.link);
                 const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
-
                 return (
-                  <CldImage
+                  <Image
                     key={icon.id}
-                    src={icon.link}
-                    alt={`icon-${icon.id}`}
+                    src={getCloudinaryUrl(icon.link, 200, 100)}
                     width={130}
                     height={100}
-                    deliveryType="fetch"
+                    alt={`icon-${icon.id}`}
+                    unoptimized
                     onClick={(e) => {
                       e.stopPropagation();
                       if (isMaxed) return;
