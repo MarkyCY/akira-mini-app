@@ -11,6 +11,8 @@ export default function Home() {
   const searchParams = useSearchParams() as any;
   const params = new URLSearchParams(searchParams);
 
+  const startParam = params.get('tgWebAppStartParam');
+
   // Función para cambiar el componente basado en el parámetro de la URL
   const handleComponentChange = (componentName: string) => {
     if (componentName) {
@@ -19,6 +21,12 @@ export default function Home() {
       window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
     }
   };
+
+  if (startParam === 'perfil') {
+    params.set('group', 'perfil');
+    params.delete('tgWebAppStartParam');
+    window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+  }
 
   // Función para determinar qué componente renderizar basado en el parámetro 'group'
   const getComponentByParam = () => {
@@ -30,8 +38,8 @@ export default function Home() {
         return <ProfileStats />;
       // case 'social':
       //   return <SocialContent />;
-      case 'shop':
-        return <ShopContent />;
+      // case 'shop':
+      //   return <ShopContent />;
       default:
         return <Group />;
     }
@@ -63,13 +71,14 @@ export default function Home() {
             className={currentGroup === 'social' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
         </div> */}
-        <div onClick={() => handleComponentChange('shop')} className="cursor-pointer">
+
+        {/* <div onClick={() => handleComponentChange('shop')} className="cursor-pointer">
           <ShinyButton
             active={currentGroup === 'shop' ? true : false}
             text="🛒 Shop"
             className={currentGroup === 'shop' ? "dark:border dark:border-neutral-500/30" : "dark:border dark:border-neutral-500/10"}
           />
-        </div>
+        </div> */}
       </div >
 
       <div className="grid items-start gap-3">
