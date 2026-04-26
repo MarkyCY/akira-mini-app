@@ -84,7 +84,7 @@ export default function ViewContest({ contest, suscribeChange }: { contest: Cont
     }, [expanded]);
 
     const totalAvatars = contest.subscription?.length || 0;
-    const avatarUrls = contest.subscription?.map((userId) => userId.avatar).slice(0, 4);
+    const avatarUrls = contest.subscription?.map((userId) => userId.avatar).filter((url): url is string => !!url).slice(0, 4) || [];
     const extraAvatars = totalAvatars > 4 ? totalAvatars - 4 : null;
     const [imgSrc, setImgSrc] = useState(contest.img);
 
