@@ -28,6 +28,7 @@ interface UserProfileProps {
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_S3 = process.env.NEXT_PUBLIC_S3_URL
 
 export default function ShowUser({ user_id }: { user_id: number }) {
     const { data: session, status } = useSession();
@@ -85,7 +86,7 @@ export default function ShowUser({ user_id }: { user_id: number }) {
                         )}
                         {showElement && (
                             <Image
-                            src={`https://1xg7ah.leapcellobj.com/os-wsp1881271832186949632-ccur-kfmr-ufhq362f/canvas/${userData.user_id}.webp?${new Date().getTime()}`}
+                            src={`${API_S3}/canvas/${userData.user_id}.webp?${new Date().getTime()}`}
                             alt=""
                             className={`w-full h-full rounded-t-md object-cover transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"
                                 }`}
