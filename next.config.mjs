@@ -64,8 +64,8 @@ const nextConfig = {
             pathname: "**",
           },
           {
-            protocol: "https",
-            hostname: "1xg7ah.leapcellobj.com",
+            protocol: "http",
+            hostname: "akira-minio-flmk0g-3e0f5d-74-208-36-171.sslip.io",
             port: "",
             pathname: "**",
           },
