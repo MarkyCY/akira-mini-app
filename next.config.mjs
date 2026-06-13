@@ -64,8 +64,8 @@ const nextConfig = {
             pathname: "**",
           },
           {
-            protocol: "http",
-            hostname: "akira-minio-flmk0g-3e0f5d-74-208-36-171.sslip.io",
+            protocol: "https",
+            hostname: "akira-s3.duckdns.org",
             port: "",
             pathname: "**",
           },
