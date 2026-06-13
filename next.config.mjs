@@ -67,7 +67,7 @@ const nextConfig = {
             protocol: "https",
             hostname: "akira-s3.duckdns.org",
             port: "",
-            pathname: "**",
+            pathname: "/**",
           },
           {
             protocol: "https",
