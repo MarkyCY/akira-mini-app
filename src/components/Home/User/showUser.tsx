@@ -86,7 +86,7 @@ export default function ShowUser({ user_id }: { user_id: number }) {
                         )}
                         {showElement && (
                             <Image
-                            src={`${API_S3}/canvas/${userData.user_id}.webp?${new Date().getTime()}`}
+                            src={`${API_S3}/akira-senpai/canvas/${userData.user_id}.webp?${new Date().getTime()}`}
                             alt=""
                             className={`w-full h-full rounded-t-md object-cover transition-opacity duration-500 ${isLoading ? "opacity-0" : "opacity-100"
                                 }`}
