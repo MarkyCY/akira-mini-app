@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 // @ts-ignore
 import "./globals.css";
-import NavBarButtons from "@/components/Home/nav-buttons";
+import ConditionalNavBar from "@/components/Captcha/conditional-nav";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthenticatedComponent from "@/contexts/AuthenticatedComponent";
@@ -47,7 +47,7 @@ export default async function RootLayout({
               {/* <AuthenticatedComponent>{children}</AuthenticatedComponent> */}
               {children}
             </div>
-            <NavBarButtons />
+            <ConditionalNavBar />
           </SessionProvider>
           {/* </AuthProvider> */}
         </ThemeProvider>

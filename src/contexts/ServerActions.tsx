@@ -51,3 +51,26 @@ export const login = async (user_id: number) => {
     throw error;
   }
 };
+
+export const answerChatJoinRequest = async (queryId: string, result: "approve" | "decline" | "queue") => {
+  const BOT_TOKEN = process.env.BOT_TOKEN;
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerChatJoinRequestQuery`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        chat_join_request_query_id: queryId,
+        result,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error answering chat join request:", error);
+    throw error;
+  }
+};
