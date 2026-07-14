@@ -1,56 +1,21 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 // @ts-ignore
 import "./globals.css";
-import ConditionalNavBar from "@/components/Captcha/conditional-nav";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/components/theme-provider";
-import AuthenticatedComponent from "@/contexts/AuthenticatedComponent";
-
-import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react"
-import { redirect } from "next/navigation";
-
-const TelegramInitializer = dynamic(
-  () => import("@/components/tg/Initializer"),
-  // { ssr: false }
-);
 
 export const metadata: Metadata = {
   title: "Otaku Senpai",
   description: "La app de los Otakus de Cuba",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const session = await auth();
-  if (!session) {
-  }
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-background text-foreground h-screen">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {/* <AuthProvider> */}
-          <SessionProvider>
-            <TelegramInitializer />
-            <div className="pt-4 px-4 pb-20" id="app">
-              {/* <AuthenticatedComponent>{children}</AuthenticatedComponent> */}
-              {children}
-            </div>
-            <ConditionalNavBar />
-          </SessionProvider>
-          {/* </AuthProvider> */}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );
