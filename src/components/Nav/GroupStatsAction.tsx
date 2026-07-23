@@ -18,3 +18,20 @@ export async function getGroupStats(token: string) {
     const data = await response.json();
     return data;
 }
+
+export async function getHaremReport(token: string) {
+    const response = await fetch(`${API_URL}/harem_report/`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+        },
+    });
+    
+    if (!response.ok) {
+        throw new Error(response.status.toString());
+    }
+
+    const data = await response.json();
+    return data;
+}

@@ -4,9 +4,12 @@ import TopUserPost from "../Home/stats/TopUserPost";
 import ShowResume from "../Home/stats/ShowResume";
 import TopUserSkeleton from "../Home/stats/TopUserSkeleton";
 import ShowResumeSkeleton from "../Home/stats/ShowResumeSkeleton";
+import HaremReportCard from "../Home/stats/HaremReportCard";
+import HaremReportSkeleton from "../Home/stats/HaremReportSkeleton";
 import SparklesText from "../magicui/sparkles-text";
-import { getGroupStats } from "./GroupStatsAction";
+import { getGroupStats, getHaremReport } from "./GroupStatsAction";
 import { StatsDaily } from "@/lib/StatsDaily";
+import { HaremReport } from "@/lib/HaremReport";
 import TopAdminWork from "../Home/stats/topAdmin";
 import Cookies from 'js-cookie';
 import WebApp from "@twa-dev/sdk";
@@ -27,6 +30,7 @@ const isSameDay = (storedDate: string | null) => {
 
 export default function Group() {
     const [data, setData] = useState<StatsDaily | null>(null);
+    const [haremData, setHaremData] = useState<HaremReport | null>(null);
     const { data: session, status } = useSession();
 
     const token = session?.user?.accessToken || null;
@@ -59,6 +63,33 @@ export default function Group() {
         }
     }, [token]);
 
+    useEffect(() => {
+        const fetchHarem = async () => {
+            try {
+                if (token) {
+                    const responseData = await getHaremReport(token);
+                    setHaremData(responseData);
+                    Cookies.set('haremReportData', JSON.stringify(responseData), { expires: 1 });
+                    Cookies.set('haremReportDate', new Date().toISOString(), { expires: 1 });
+                }
+            } catch (error: any) {
+                console.error('Error al obtener el reporte del harem:', error);
+                if (error.message === '401') {
+                    signOut();
+                }
+            }
+        }
+
+        const savedHaremData = Cookies.get('haremReportData') || null;
+        const savedHaremDate = Cookies.get('haremReportDate') || null;
+
+        if (savedHaremData && isSameDay(savedHaremDate)) {
+            setHaremData(JSON.parse(savedHaremData));
+        } else {
+            fetchHarem();
+        }
+    }, [token]);
+
     return (
         <>
             <div className="w-full h-auto max-w-sm pt-3" id="header">
@@ -80,6 +111,9 @@ export default function Group() {
             </Suspense>
             <Suspense fallback={<TopUserSkeleton />}>
                 {data ? <TopAdminWork data={data.top_admins} /> : <TopUserSkeleton />}
+            </Suspense>
+            <Suspense fallback={<HaremReportSkeleton />}>
+                {haremData ? <HaremReportCard data={haremData} /> : <HaremReportSkeleton />}
             </Suspense>
             <Suspense fallback={<TopUserSkeleton />}>
                 {data ? <TopUserPost data={data.top_users} /> : <TopUserSkeleton />}
