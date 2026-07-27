@@ -11,8 +11,8 @@ export default function HaremEntryView({ entry }: HaremEntryViewProps) {
     const [error, setError] = useState(false);
 
     const d = typeof entry.date === 'string' ? new Date(entry.date) : entry.date;
-    const datePart = d.toLocaleDateString('es-CU', { timeZone: 'America/Havana', day: '2-digit', month: '2-digit', year: 'numeric' });
-    const timePart = d.toLocaleTimeString('en-US', { timeZone: 'America/Havana', hour: '2-digit', minute: '2-digit', hour12: true });
+    const datePart = d.toLocaleDateString('es-CU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timePart = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     const dateStr = `${datePart} ${timePart}`;
 
     return (
