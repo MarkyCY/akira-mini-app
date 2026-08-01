@@ -23,7 +23,7 @@ export default function HaremReportCard({ data }: { data: HaremReport }) {
                     {data.waifus.length > 0 ? (
                         <div className="flex flex-col gap-2">
                             {data.waifus.map((entry) => (
-                                <HaremEntryView key={entry.user_id} entry={entry} />
+                                <HaremEntryView key={`${entry.user_id}-${entry.date.toString()}`} entry={entry} />
                             ))}
                         </div>
                     ) : (
@@ -37,7 +37,7 @@ export default function HaremReportCard({ data }: { data: HaremReport }) {
                     {data.husbandos.length > 0 ? (
                         <div className="flex flex-col gap-2">
                             {data.husbandos.map((entry) => (
-                                <HaremEntryView key={entry.user_id} entry={entry} />
+                                <HaremEntryView  key={`${entry.user_id}-${entry.date.toString()}`} entry={entry} />
                             ))}
                         </div>
                     ) : (
