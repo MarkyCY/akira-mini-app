@@ -3,9 +3,10 @@ import HaremEntryView from "./HaremEntryView";
 import { HaremReport } from "@/lib/HaremReport";
 
 export default function HaremReportCard({ data }: { data: HaremReport }) {
-    const fecha = typeof data.fecha === 'string'
-        ? new Date(data.fecha + '+00:00').toLocaleDateString('es-ES', { timeZone: 'America/Havana', day: 'numeric', month: 'long', year: 'numeric' })
-        : data.fecha.toLocaleDateString('es-ES', { timeZone: 'America/Havana', day: 'numeric', month: 'long', year: 'numeric' });
+    const fechaStr = typeof data.fecha === 'string'
+        ? data.fecha
+        : data.fecha.toISOString().split('T')[0];
+    const fecha = new Date(fechaStr + '+00:00').toLocaleDateString('es-ES', { timeZone: 'America/Havana', day: 'numeric', month: 'long', year: 'numeric' });
 
     return (
         <BlurFade delay={0.15} duration={0.50} inView className="w-full h-auto p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-neutral-900 dark:border-neutral-900">
@@ -37,7 +38,7 @@ export default function HaremReportCard({ data }: { data: HaremReport }) {
                     {data.husbandos.length > 0 ? (
                         <div className="flex flex-col gap-2">
                             {data.husbandos.map((entry) => (
-                                <HaremEntryView  key={`${entry.user_id}-${entry.date.toString()}`} entry={entry} />
+                                <HaremEntryView key={`${entry.user_id}-${entry.date.toString()}`} entry={entry} />
                             ))}
                         </div>
                     ) : (
