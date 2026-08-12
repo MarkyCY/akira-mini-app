@@ -10,10 +10,10 @@ export const verifUser = async (user_id: number) => {
         }
         
         const data = await response.json();
-        if (data.result.status === 'kicked' || data.result.status === 'left') {
-            console.error('Usuario no es miembro del grupo ' + data.result.status);
-            throw new Error('Usuario no es miembro del grupo');
-        }
+        // if (data.result.status === 'kicked' || data.result.status === 'left') {
+        //     console.error('Usuario no es miembro del grupo ' + data.result.status);
+        //     throw new Error('Usuario no es miembro del grupo');
+        // }
         return data;
 
     } catch (error) {
