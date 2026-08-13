@@ -883,55 +883,63 @@ export default function DragAndDropPerfil() {
             ref={iconsMenuRef}
             className={`absolute ${isDriverActive ? 'z-50' : 'z-10'} p-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg w-full max-h-60 overflow-y-auto`}
           >
-            <div id="icons-list" className="flex flex-wrap gap-2">
+            <div id="icons-list" className="grid grid-cols-2 gap-2">
               {animeIcons.map((icon) => {
                 const count = countBySrc(icon.link);
                 const isMaxed = count >= 1 || perfilItems.length >= MAX_ITEMS;
+                const maxH = 100;
+                const previewScale = icon.height > maxH ? maxH / icon.height : 1;
+                const displayW = Math.round(icon.width * previewScale);
+                const displayH = Math.round(icon.height * previewScale);
                 return (
-                  <Image
+                  <div
                     key={icon.id}
-                    src={getCloudinaryUrl(icon.link, 200, 100)}
-                    width={130}
-                    height={100}
-                    alt={`icon-${icon.id}`}
-                    unoptimized
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (isMaxed) return;
+                    className="flex h-[100px] w-full items-center justify-center"
+                  >
+                    <Image
+                      src={getCloudinaryUrl(icon.link, displayW * 2, displayH * 2)}
+                      width={displayW}
+                      height={displayH}
+                      alt={`icon-${icon.id}`}
+                      unoptimized
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (isMaxed) return;
 
-                      const rect = perfilRef.current?.getBoundingClientRect();
-                      const id = Date.now().toString();
-                      const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
-                      const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
+                        const rect = perfilRef.current?.getBoundingClientRect();
+                        const id = Date.now().toString();
+                        const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
+                        const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
 
-                      const maxWidth = 300;
-                      const scale = icon.width > maxWidth ? maxWidth / icon.width : 1;
-                      const newWidth = icon.width * scale;
-                      const newHeight = icon.height * scale;
+                        const maxWidth = 300;
+                        const scale = icon.width > maxWidth ? maxWidth / icon.width : 1;
+                        const newWidth = icon.width * scale;
+                        const newHeight = icon.height * scale;
 
-                      const newItem = {
-                        id,
-                        src: icon.link,
-                        x: 0,
-                        y: 0,
-                        width: newWidth,
-                        height: newHeight,
-                        rotation: 0,
-                      };
+                        const newItem = {
+                          id,
+                          src: icon.link,
+                          x: 0,
+                          y: 0,
+                          width: newWidth,
+                          height: newHeight,
+                          rotation: 0,
+                        };
 
-                      const newItems = [...perfilItems, newItem];
-                      console.log("Agregando nuevo item:", newItem);
-                      setPerfilItems(newItems);
+                        const newItems = [...perfilItems, newItem];
+                        console.log("Agregando nuevo item:", newItem);
+                        setPerfilItems(newItems);
 
-                      if (!isTutorialViewed('dragIcnDriver')) {
-                        setTimeout(() => {
-                          const driverDrag = createDragIcn();
-                          driverDrag.drive();
-                        }, 100);
-                      }
-                    }}
-                    className={`cursor-pointer rounded-md ${isMaxed ? "opacity-30 pointer-events-none" : ""} icon-img`}
-                  />
+                        if (!isTutorialViewed('dragIcnDriver')) {
+                          setTimeout(() => {
+                            const driverDrag = createDragIcn();
+                            driverDrag.drive();
+                          }, 100);
+                        }
+                      }}
+                      className={`max-h-full max-w-full cursor-pointer rounded-md object-contain ${isMaxed ? "opacity-30 pointer-events-none" : ""} icon-img`}
+                    />
+                  </div>
                 );
               })}
             </div>
