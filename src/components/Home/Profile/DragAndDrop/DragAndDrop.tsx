@@ -350,13 +350,18 @@ export default function DragAndDropPerfil() {
   };
 
   const fetchCanvaJSON = async (token: string) => {
-    const response = await getCanvaJSON(token)
-    if (!response) return;
-    setPerfilItems(response.items);
-    // setBgColor(response.bgColor);
-    setBgImage(response.bgImage);
-    Cookies.set("perfilItems", JSON.stringify(response.items));
-    setIsLoading(false)
+    try {
+      const response = await getCanvaJSON(token)
+      if (!response) return;
+      setPerfilItems(response.items);
+      // setBgColor(response.bgColor);
+      setBgImage(response.bgImage);
+      Cookies.set("perfilItems", JSON.stringify(response.items));
+    } catch (error) {
+      console.error("Error loading canvas:", error);
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // Efecto para manejar clics fuera de los menús
@@ -408,11 +413,20 @@ export default function DragAndDropPerfil() {
     // Si esta el token procedemos a pedir los pack e iconos
     if (token) {
       fetchCanvaJSON(token)
+    } else {
+      setIsLoading(false)
     }
 
     if (stored) {
 
-      const loadedItems = JSON.parse(stored);
+      let loadedItems: Item[];
+      try {
+        loadedItems = JSON.parse(stored);
+      } catch (error) {
+        console.error("Error parsing cookie items:", error);
+        loadedItems = [];
+      }
+
       // Actualizamos los items fijos, si no existen en los datos cargados, se agregan.
       const fixedItems: Item[] = [
         // {
@@ -484,7 +498,7 @@ export default function DragAndDropPerfil() {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
-    if (perfilItems.length > 0 && token) {
+    if (!isLoading && token) {
       setIsSaving(true);
       setSaved(false);
       debounceTimeout.current = setTimeout(() => {
@@ -509,7 +523,7 @@ export default function DragAndDropPerfil() {
         clearTimeout(debounceTimeout.current);
       }
     };
-  }, [perfilItems, bgColor, bgImage, token]);
+  }, [perfilItems, bgColor, bgImage, token, isLoading]);
 
   // const handleExport = async (type: 'png' | 'gif' = 'png') => {
   //   if (!perfilRef.current) return;
