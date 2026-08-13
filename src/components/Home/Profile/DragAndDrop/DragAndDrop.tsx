@@ -9,7 +9,7 @@ import "driver.js/dist/driver.css";
 
 import { useSession } from "next-auth/react";
 import { searchAnimeFanart, getAnimeBackgroud, getAnimeIcon, FanartSearchResult } from "../serverAction/searchAnimeFanart";
-import { getCanvaJSON, postCanvaJSON } from "../serverAction/dragAndDropActios";
+import { getCanvaJSON, postCanvaJSON } from "../serverAction/dragAndDropAction";
 import { useTheme } from "next-themes";
 import SaveIcon from "@/components/icons/save";
 import OtakuLoadIcon from "@/components/icons/otakuLoad";

@@ -56,7 +56,7 @@ export async function getAnimeBackgroud(id: any): Promise<{ id: string; link: st
 
 export async function getAnimeIcon(id: any): Promise<{ id: string; link: string; width: number; height: number }[]> {
     const response = await fetch(`https://webservice.fanart.tv/v3.2/tv/${id}?api_key=426e6728c1b5c655975e88a14fc1a413`);
-    
+
     if (!response.ok) {
         console.error('Error al obtener los datos:', response);
         throw new Error(response.status.toString());
@@ -64,13 +64,19 @@ export async function getAnimeIcon(id: any): Promise<{ id: string; link: string;
 
     const textData = await response.json();
 
-    const data = textData.hdtvlogo.map((item: any) => ({
-        id: item.id,
-        link: item.url,
-        width: item.width,
-        height: item.height,
-    }));
+    const mapItems = (items: any[] = []) =>
+        items.map((item: any) => ({
+            id: item.id,
+            link: item.url,
+            width: item.width,
+            height: item.height,
+        }));
+
+    const data = [
+        ...mapItems(textData.hdtvlogo),
+        ...mapItems(textData.characterart),
+    ];
 
     return data;
-};
+}
 
