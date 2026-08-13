@@ -908,11 +908,15 @@ export default function DragAndDropPerfil() {
 
                         const rect = perfilRef.current?.getBoundingClientRect();
                         const id = Date.now().toString();
-                        const x = Math.random() * ((rect?.width ?? 400) - DEFAULT_SIZE);
-                        const y = Math.random() * ((rect?.height ?? 200) - DEFAULT_SIZE);
-
-                        const maxWidth = 300;
-                        const scale = icon.width > maxWidth ? maxWidth / icon.width : 1;
+                        // El tamaño inicial debe respetar la tarjeta. De otro modo Rnd
+                        // solo lo ajusta después de que el usuario intenta redimensionarlo.
+                        const maxWidth = Math.min(MAX_SIZE, rect?.width ?? MAX_SIZE);
+                        const maxHeight = Math.min(MAX_SIZE, rect?.height ?? MAX_SIZE);
+                        const scale = Math.min(
+                          1,
+                          maxWidth / icon.width,
+                          maxHeight / icon.height
+                        );
                         const newWidth = icon.width * scale;
                         const newHeight = icon.height * scale;
 
