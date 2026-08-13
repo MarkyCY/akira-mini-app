@@ -256,6 +256,7 @@ export default function DragAndDropPerfil() {
 
   // Variables de estado
   const [perfilItems, setPerfilItems] = useState<Item[]>([]);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [bgColor, setBgColor] = useState("#e0e0e0");
   const [bgImage, setBgImage] = useState("https://i.ibb.co/Qjcqy6wL/profile-background.jpg");
   const [canvaRequestJSON, setCanvaRequestJSON] = useState<string>("{}");
@@ -367,6 +368,11 @@ export default function DragAndDropPerfil() {
   // Efecto para manejar clics fuera de los menús
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-perfil-item]')) {
+        setSelectedItemId(null);
+      }
+
       // Cerrar dropdown de búsqueda si está abierto y se hace clic fuera
       if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node) && showSearchDropdown) {
         setShowSearchDropdown(false);
@@ -572,6 +578,7 @@ export default function DragAndDropPerfil() {
 
   const eliminarItem = (id: string) => {
     setPerfilItems((prev) => prev.filter((item) => item.id !== id));
+    setSelectedItemId((selectedId) => selectedId === id ? null : selectedId);
   };
 
   // Función para manejar el doble toque en dispositivos móviles
@@ -684,6 +691,7 @@ export default function DragAndDropPerfil() {
             {perfilItems.map((item) => (
               <Rnd
                 key={item.id}
+                data-perfil-item={item.id}
                 size={{ width: item.width, height: item.height }}
                 position={{ x: item.x, y: item.y }}
                 bounds="parent"
@@ -729,7 +737,11 @@ export default function DragAndDropPerfil() {
                 onDoubleClick={() => {
                   if (!item.isFixed) eliminarItem(item.id);
                 }}
-                onTouchStart={() => handleTouchStart(item.id, item.isFixed)}
+                onMouseDown={() => setSelectedItemId(item.id)}
+                onTouchStart={() => {
+                  setSelectedItemId(item.id);
+                  handleTouchStart(item.id, item.isFixed);
+                }}
                 style={{
                   transform: `rotate(${item.rotation}deg)`,
                   zIndex: item.isFixed ? 2 : 3,
@@ -747,6 +759,12 @@ export default function DragAndDropPerfil() {
                     />
                   ) : (
                     <h3 className="flex text-center justify-center items-center text-xl text-white">Solen&apos;ya</h3>
+                  )}
+                  {!item.isFixed && selectedItemId === item.id && (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 rounded-sm border-2 border-dashed border-white/90 shadow-[0_0_2px_rgba(0,0,0,0.9)]"
+                    />
                   )}
                 </div>
               </Rnd>
