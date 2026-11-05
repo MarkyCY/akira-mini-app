@@ -16,6 +16,7 @@ import OtakuLoadIcon from "@/components/icons/otakuLoad";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
 import { getCldImageUrl } from 'next-cloudinary';
 import XIcon from "@/components/icons/x";
+import { Backlight } from "@/components/ui/backlight";
 
 interface Item {
   id: string;
@@ -649,6 +650,7 @@ export default function DragAndDropPerfil() {
       {/* Los iconos ahora se muestran en el menú desplegable */}
 
       <div className="flex flex-col items-start gap-4">
+      <Backlight blur={20} className="w-full">
         {isLoading ? (<div
           ref={perfilRef}
           className="relative border dark:border-neutral-800 touch-none w-full justify-center items-center"
@@ -770,7 +772,8 @@ export default function DragAndDropPerfil() {
               </Rnd>
             ))}
           </div>
-        )}
+          )}
+        </Backlight>
         {/* <button
           className="px-4 py-2 bg-blue-500 text-white rounded"
           onClick={() => { handleExport('png') }}
