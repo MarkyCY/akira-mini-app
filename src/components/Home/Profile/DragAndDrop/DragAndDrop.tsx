@@ -653,7 +653,7 @@ export default function DragAndDropPerfil() {
       <Backlight blur={20} className="w-full">
         {isLoading ? (<div
           ref={perfilRef}
-          className="relative border dark:border-neutral-800 touch-none w-full justify-center items-center"
+          className="relative touch-none w-full justify-center items-center"
           style={{
             aspectRatio: "2/1",
             backgroundSize: "cover",
@@ -672,7 +672,7 @@ export default function DragAndDropPerfil() {
         ) : (
           <div
             ref={perfilRef}
-            className="relative border dark:border-neutral-800 touch-none w-full"
+            className="relative touch-none w-full"
             id="draw-card"
             style={{
               aspectRatio: "2/1",
